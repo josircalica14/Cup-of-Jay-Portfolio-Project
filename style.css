@@ -1319,6 +1319,63 @@ body.light-mode .carousel::after {
     padding: 0 var(--spacing-sm);
     box-sizing: border-box;
     position: relative;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Unfocused cards — scaled down, blurred, dimmed */
+.carousel__slide .card {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+                filter 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+                opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    filter: blur(2px) brightness(0.6);
+    transform: scale(0.88) translateY(2rem);
+    opacity: 0.7;
+}
+
+/* Focused card — sharp, lifted */
+.carousel__slide.is-active .card {
+    filter: none;
+    transform: scale(1) translateY(-1rem);
+    opacity: 1;
+}
+
+/* Static view (all cards visible) — disable bokeh effect */
+.carousel__track--static .carousel__slide .card {
+    filter: none;
+    transform: none;
+    opacity: 1;
+}
+
+/* Static layout — center cards naturally */
+.carousel__track--static {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6rem;
+}
+
+.carousel__track--static .carousel__slide {
+    min-width: 0;
+    width: 45%;
+    flex-shrink: 0;
+}
+
+@media (max-width: 1023px) {
+    .carousel__track--static .carousel__slide {
+        width: 50%;
+    }
+}
+
+@media (max-width: 1450px) and (min-width: 768px) {
+    .carousel__track--static .carousel__slide {
+        width: 70%;
+    }
+}
+
+@media (max-width: 767px) {
+    .carousel__track--static .carousel__slide {
+        width: 90%;
+    }
 }
 
 @media (min-width: 768px) {
@@ -1600,5 +1657,11 @@ body.light-mode .carousel__indicator {
     
     .card p {
         font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .card__cover {
+        height: 380px;
     }
 }

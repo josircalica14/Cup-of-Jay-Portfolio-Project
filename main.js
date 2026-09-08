@@ -70,10 +70,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setupTrack() {
     track.innerHTML = '';
-    // [clones of all] + [originals] + [clones of all]
-    [...originalSlides, ...originalSlides, ...originalSlides].forEach(s => {
-      track.appendChild(s.cloneNode(true));
-    });
+    if (isStaticView()) {
+      // Just show originals, no cloning
+      originalSlides.forEach(s => track.appendChild(s.cloneNode(true)));
+    } else {
+      // [clones of all] + [originals] + [clones of all]
+      [...originalSlides, ...originalSlides, ...originalSlides].forEach(s => {
+        track.appendChild(s.cloneNode(true));
+      });
+    }
   }
 
   function getPos(index) {
@@ -83,6 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setTrackPos(animate) {
+    if (isStaticView()) {
+      track.style.transition = 'none';
+      track.style.transform = 'none';
+      return;
+    }
     track.style.transition = animate ? 'transform 0.5s ease-in-out' : 'none';
     track.style.transform = `translateX(-${getPos(trackIndex)}%)`;
   }
@@ -91,14 +101,37 @@ document.addEventListener('DOMContentLoaded', () => {
     return ((trackIndex - count) % count + count) % count;
   }
 
+  function updateFocus() {
+    const allSlides = Array.from(track.querySelectorAll('.carousel__slide'));
+    allSlides.forEach((slide, i) => {
+      slide.classList.toggle('is-active', i === trackIndex);
+    });
+  }
+
   function updateIndicators() {
     const ri = realIndex();
     Array.from(indicatorsContainer.querySelectorAll('.carousel__indicator'))
       .forEach((btn, i) => btn.classList.toggle('active', i === ri));
+    updateFocus();
+  }
+
+  function isStaticView() {
+    return count <= slidesPerView || count <= 2;
+  }
+
+  function updateStaticState() {
+    const isStatic = isStaticView();
+    prevButton.style.display = isStatic ? 'none' : '';
+    nextButton.style.display = isStatic ? 'none' : '';
+    indicatorsContainer.style.display = isStatic ? 'none' : '';
+    track.classList.toggle('carousel__track--static', isStatic);
+    if (isStatic) {
+      clearInterval(autoplayTimer);
+    }
   }
 
   function goNext() {
-    if (isTransitioning) return;
+    if (isTransitioning || isStaticView()) return;
     isTransitioning = true;
     trackIndex++;
     setTrackPos(true);
@@ -106,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function goPrev() {
-    if (isTransitioning) return;
+    if (isTransitioning || isStaticView()) return;
     isTransitioning = true;
     trackIndex--;
     setTrackPos(true);
@@ -116,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // After each transition, silently jump back into the middle set if we've drifted
   track.addEventListener('transitionend', () => {
     isTransitioning = false;
-    // If we've gone past the cloned edges, jump silently to the equivalent real position
     if (trackIndex >= count * 2) {
       trackIndex -= count;
       setTrackPos(false);
@@ -124,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
       trackIndex += count;
       setTrackPos(false);
     }
+    updateFocus();
   });
 
   function goToReal(ri) {
@@ -156,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let autoplayTimer;
 
   function startAutoplay() {
+    if (isStaticView()) return;
     autoplayTimer = setInterval(goNext, 3000);
   }
 
@@ -174,10 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTrack();
     trackIndex = count + ri;
     setTrackPos(false);
+    updateStaticState();
   });
 
+  slidesPerView = getSlidesPerView();
   setupTrack();
   createIndicators();
   setTrackPos(false);
+  updateFocus();
+  updateStaticState();
   startAutoplay();
 });
