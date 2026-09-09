@@ -27,12 +27,6 @@
     align-items: center;
 }
 
-@media (min-width: 721px) {
-	.theme-toggle {
-		/* Keep desktop positioning consistent */
-	}
-}
-
 .switch {
   position: relative;
   display: inline-block;
