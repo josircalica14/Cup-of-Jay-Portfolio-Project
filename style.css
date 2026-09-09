@@ -19,7 +19,7 @@ html {
 
 @font-face {
     font-family: 'CardBodyFont';
-    src: url('./assets/fonts/OrchisPrima-Demi.otf');
+    src: url('./assets/fonts/OrchisPrima-Regular.otf');
 }
 
 /* ===== CORE CSS VARIABLES - SINGLE SOURCE OF TRUTH, EASY TO UPDATE ===== */
@@ -507,49 +507,29 @@ body.light-mode .hero-section {
     max-width: 80vw;
     height: auto;
     object-fit: contain;
-    pointer-events: auto; /* Enable pointer events so hover works */
+    pointer-events: auto;
     user-select: none;
     -webkit-user-select: none;
     filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    cursor: pointer; /* Add cursor to indicate it's interactive */
-    transform: translateY(0);
+    cursor: pointer;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.1s ease-out, filter 0.4s ease;
 }
 
-/* Subtle counter-clockwise rotational tilt only - works in both dark and light modes */
-.hero-image:hover {
-    transform: rotate(-1.5deg) scale(1.01);
-    /* Preserve the neon glow effect in dark mode while adding slightly enhanced shadow */
-}
-
-/* Ensure dark mode glow still works with the new hover transform */
-body:not(.light-mode) .hero-image:hover {
-    filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5)) drop-shadow(0 0 25px rgba(0, 79, 210, 0.4)) drop-shadow(0 0 35px rgba(34, 205, 218, 0.2));
-    transform: rotate(-1.5deg) scale(1.01);
-}
-
-/* Light mode hover maintains its enhanced shadow */
-body.light-mode .hero-image:hover {
-    filter: drop-shadow(0 12px 40px rgba(0,0,0,0.25)) drop-shadow(0 6px 16px rgba(0,0,0,0.18));
-    transform: rotate(1.8deg) scale(1.08);
-}
-
-/* Base dark mode styles: BRIGHTER base glow, still contained */
+/* Base dark mode glow */
 body:not(.light-mode) .hero-image {
     filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5))
-            drop-shadow(0 0 12px rgba(0, 79, 210, 0.7));  /* Increased opacity for a brighter base glow */
+            drop-shadow(0 0 12px rgba(0, 79, 210, 0.7));
 }
 
-/* Subtly expanded neon glow on hover - uses the SAME base color, no secondary hue */
-body:not(.light-mode) .hero-image:hover {
-    filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5))
-            drop-shadow(0 0 25px rgba(0, 81, 210, 0.89));    /* Expands only the base brand blue, brighter and larger */
-    transform: rotate(1.8deg) scale(1.08);
-}
-
-/* Enhanced hero image shadow for light mode - more prominent for better depth */
 body.light-mode .hero-image {
     filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.15)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.555));
+}
+
+/* Reset tilt smoothly when mouse leaves */
+.hero-image.tilt-reset {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
 }
 
 .hero-title {
@@ -1308,9 +1288,9 @@ body.light-mode .carousel::after {
 }
 
 .carousel {
-    overflow-x: hidden;
+    overflow-x: clip;
     overflow-y: visible;
-    padding: 2rem 3rem;
+    padding: 2rem 3rem 3rem;
     margin: 0 -3rem;
 }
 
@@ -1406,87 +1386,130 @@ img {
 .card {
     color: #e5e5e5;
     max-width: 30rem;
-    border-radius: 4rem;
+    border-radius: 2.5rem;
     overflow: clip;
-    padding: 0.65rem;
-    background: #35353566;
-    box-shadow: inset 0 0 2px -1px #ffffff55, 0 0 2px -1px #ffffff55;
-    backdrop-filter: blur(20px);
+    padding: 0.6rem;
+    background: linear-gradient(145deg, rgba(60,60,70,0.7), rgba(30,30,38,0.8));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 2px 8px rgba(0,0,0,0.4),
+        0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     position: relative;
     font-size: 1.5rem;
     font-weight: 200;
     margin: 0 auto;
-    transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
-                box-shadow 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .card:hover {
-    transform: translateY(-6px);
-    box-shadow: inset 0 0 4px -2px #ffffff55,
-                0 16px 48px rgba(0,0,0,0.5),
-                0 0 20px rgba(255, 255, 255, 0.15),
-                0 0 40px rgba(255, 255, 255, 0.06),
-                0 0 0 1px rgba(255, 255, 255, 0.12);
+    transform: translateY(-8px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 30px rgba(255,255,255,0.07),
+        0 0 60px rgba(34,205,218,0.06);
 }
 
 .card__inner {
     grid-template-areas: "stack";
     position: relative;
-    border-radius: 4rem;
+    border-radius: 2rem;
     overflow: clip;
     display: grid;
-    box-shadow: inset 0 0 4px -2px #ffffff55, 0 0 4px -2px #ffffff55;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 .card__inner:after {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 3rem;
-    backdrop-filter: blur(100px);
-    mask: linear-gradient(-14deg, black 30%, transparent 66%);
-    -webkit-mask: linear-gradient(-14deg, black 30%, transparent 66%);
+    border-radius: 2rem;
+    backdrop-filter: blur(80px);
+    mask: linear-gradient(-20deg, black 25%, transparent 60%);
+    -webkit-mask: linear-gradient(-20deg, black 25%, transparent 60%);
 }
 
 .card__cover {
     grid-area: stack;
     width: 100%;
-    height: 500px;
+    height: 480px;
     object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .card:hover .card__cover {
-    transform: scale(1.06);
+    transform: scale(1.05);
 }
 
 .card__body {
     z-index: 1;
     grid-area: stack;
     margin-top: auto;
-    padding: 1rem 2rem 1.5rem;
+    padding: 2.5rem 1.75rem 1.5rem;
+    background: linear-gradient(to top,
+        rgba(10,10,16,0.98) 0%,
+        rgba(10,10,16,0.85) 30%,
+        rgba(10,10,16,0.4) 65%,
+        transparent 100%);
+    position: relative;
+    border-radius: 0 0 2rem 2rem;
+    overflow: hidden;
+}
+
+/* Blurred layer behind the body — separate from gradient so text stays sharp */
+.card__body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    mask: linear-gradient(to top, black 50%, transparent 100%);
+    -webkit-mask: linear-gradient(to top, black 50%, transparent 100%);
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 0 0 2rem 2rem;
 }
 
 .card__header {
-    font-size: 5rem;
-    font-weight: 300;
+    font-size: 2.4rem;
+    font-weight: 400;
     font-family: 'CardHeaderFont', sans-serif;
-    margin-block: 0.5rem;
+    margin-block: 0 0.3rem;
     display: flex;
+    letter-spacing: 0.3px;
 }
 
 .card__header .chips {
     display: inline-flex;
     width: auto;
+    font-size: 1.4rem;
+    padding: 0.25em 0.8em 0.25em 0;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    font-family: 'CardHeaderFont', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #006eff;
+}
+
+body.light-mode .card__header .chips {
+    color: #012ffc;
 }
 
 .card__body > p {
-    font-size: 1rem;
-    color: #dcdcdcbf;
-    line-height: 1.5;
-    margin-block: 0.4rem 0.8rem;
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-block: 0.3rem 0.9rem;
     font-family: 'CardBodyFont', sans-serif;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 .icon {
@@ -1497,37 +1520,47 @@ img {
 
 .button {
     text-decoration: none;
-    font: inherit;
+    font-family: 'NavBarFont', sans-serif;
     font-weight: 600;
-    color: #0d0d0d;
-    padding: .6em 1.1em;
+    color: #ffffff;
+    padding: 0.55em 1.2em;
     border-radius: 5rem;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.9rem;
-    background: linear-gradient(135deg, #22cdda 0%, #1ab5c1 100%);
-    box-shadow: 0 2px 12px rgba(34, 205, 218, 0.35);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #004fd2 0%, #1a6bff 100%);
+    box-shadow: 0 2px 16px rgba(0, 79, 210, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     white-space: nowrap;
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
 }
 
 .button:hover {
-    box-shadow: 0 4px 20px rgba(34, 205, 218, 0.55);
+    box-shadow: 0 6px 24px rgba(0, 79, 210, 0.55), inset 0 1px 0 rgba(255,255,255,0.2);
     transform: translateY(-2px);
 }
 
 .chips {
     font-weight: 400;
-    gap: .5em;
+    gap: .4em;
     display: flex;
     align-items: center;
-    font-size: 1rem;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.07);
+    padding: 0.3em 0.8em;
+    border-radius: 5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 0.5px;
 }
 
 .chip-title {
-    font-size: 1rem;
+    background: rgba(34,205,218,0.1);
+    border-color: rgba(34,205,218,0.2);
+    color: #e5e5e5;
+    font-family: 'CardHeaderFont', sans-serif;
+    font-size: 0.85rem;
 }
 
 .flex {
@@ -1539,43 +1572,74 @@ img {
 
 /* Light mode cards */
 body.light-mode .card {
-    color: #1a1a1a;
-    background: rgba(255, 255, 255, 0.85);
+    color: #000000;
+    background: linear-gradient(145deg, rgba(255,255,255,1), rgba(235,238,248,0.98));
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,1),
-        0 4px 16px rgba(0, 0, 0, 0.1),
-        0 12px 40px rgba(0, 0, 0, 0.12),
-        0 0 0 1px rgba(0, 0, 0, 0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+        0 4px 12px rgba(0,0,0,0.08),
+        0 16px 48px rgba(0,0,0,0.16),
+        0 32px 64px rgba(0,0,0,0.1),
+        0 0 0 1px rgba(0,0,0,0.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
 }
 
 body.light-mode .card:hover {
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,1),
-        0 8px 32px rgba(0, 0, 0, 0.15),
-        0 24px 64px rgba(0, 0, 0, 0.18),
-        0 0 0 1px rgba(0, 0, 0, 0.08),
-        0 0 24px rgba(0, 0, 0, 0.08);
-    transform: translateY(-8px);
+        0 8px 24px rgba(0,0,0,0.12),
+        0 24px 64px rgba(0,0,0,0.2),
+        0 40px 80px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(0,0,0,0.08),
+        0 0 48px rgba(0,79,210,0.08);
+    transform: translateY(-10px);
 }
 
 body.light-mode .card__inner {
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+body.light-mode .card__body {
+    background: linear-gradient(to top,
+        rgba(255,255,255,0.98) 0%,
+        rgba(255,255,255,0.88) 30%,
+        rgba(255,255,255,0.45) 65%,
+        transparent 100%);
+}
+
+body.light-mode .card__body::before {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+body.light-mode .card__header {
+    color: #000000;
 }
 
 body.light-mode .card__body > p {
-    color: rgba(30, 30, 30, 0.7);
+    color: #181818;
+}
+
+body.light-mode .chips {
+    background: rgba(30,42,64,0.06);
+    border-color: rgba(30,42,64,0.12);
+    color: #000000;
+}
+
+body.light-mode .chip-title {
+    background: transparent;
+    border-color: transparent;
+    color: #1a2640;
 }
 
 body.light-mode .button {
-    background: linear-gradient(135deg, #004fd2 0%, #0060ff 100%);
-    box-shadow: 0 2px 12px rgba(0, 79, 210, 0.3);
+    background: linear-gradient(135deg, #004fd2 0%, #1a6bff 100%);
+    box-shadow: 0 2px 16px rgba(0,79,210,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
     color: #ffffff;
 }
 
 body.light-mode .button:hover {
-    box-shadow: 0 4px 20px rgba(0, 79, 210, 0.45);
+    box-shadow: 0 6px 24px rgba(0,79,210,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 /* Remove slide overlay — not needed with original approach */

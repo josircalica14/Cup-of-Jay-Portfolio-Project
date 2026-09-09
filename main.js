@@ -8,6 +8,45 @@ window.addEventListener('load', () => {
   }, 150);
 });
 
+// Hero image 3D tilt on mouse move
+const heroImage = document.querySelector('.hero-image');
+const heroSection = document.querySelector('.hero-section');
+
+if (heroImage && heroSection) {
+  const MAX_TILT = 12;
+  const SCALE_ON_HOVER = 1.04;
+  const isDark = () => !document.body.classList.contains('light-mode');
+
+  heroSection.addEventListener('mousemove', (e) => {
+    const rect = heroImage.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    const rotY = dx * MAX_TILT;
+    const rotX = -dy * MAX_TILT * 0.6;
+
+    // Glow intensity based on tilt magnitude
+    const intensity = Math.sqrt(dx * dx + dy * dy);
+    const glowSize = 20 + intensity * 30;
+    const glowOpacity = 0.5 + intensity * 0.4;
+
+    const glow = isDark()
+      ? `drop-shadow(0 8px 32px rgba(0,0,0,0.5)) drop-shadow(0 0 ${glowSize}px rgba(0, 79, 210, ${glowOpacity})) drop-shadow(0 0 ${glowSize * 1.5}px rgba(34, 205, 218, ${glowOpacity * 0.5}))`
+      : `drop-shadow(0 12px 40px rgba(0,0,0,0.2)) drop-shadow(0 0 ${glowSize}px rgba(0, 79, 210, ${glowOpacity * 0.6}))`;
+
+    heroImage.classList.remove('tilt-reset');
+    heroImage.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${SCALE_ON_HOVER})`;
+    heroImage.style.filter = glow;
+  });
+
+  heroSection.addEventListener('mouseleave', () => {
+    heroImage.classList.add('tilt-reset');
+    heroImage.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+    heroImage.style.filter = '';
+  });
+}
+
 // Sticky nav — add frosted background after scrolling past hero
 const nav = document.querySelector('.nav');
 const mobileBar = document.querySelector('.mobile-nav__bar');
@@ -26,26 +65,20 @@ updateNav();
 const themeCheckbox = document.getElementById('theme-checkbox');
 const body = document.body;
 
-// Check for saved theme preference or default to dark mode
-const currentTheme = localStorage.getItem('theme') || 'dark-mode';
-body.classList.add(currentTheme);
+// Sync body class from html class set by inline script
+const savedTheme = localStorage.getItem('theme') || 'dark-mode';
+body.className = savedTheme;
+document.documentElement.className = savedTheme;
 
-// Set checkbox state based on theme
-if (currentTheme === 'light-mode') {
+if (savedTheme === 'light-mode') {
     themeCheckbox.checked = true;
 }
 
-// Toggle theme on checkbox change
 themeCheckbox.addEventListener('change', () => {
-  if (themeCheckbox.checked) {
-    body.classList.remove('dark-mode');
-    body.classList.add('light-mode');
-    localStorage.setItem('theme', 'light-mode');
-  } else {
-    body.classList.remove('light-mode');
-    body.classList.add('dark-mode');
-    localStorage.setItem('theme', 'dark-mode');
-  }
+  const newTheme = themeCheckbox.checked ? 'light-mode' : 'dark-mode';
+  body.className = newTheme;
+  document.documentElement.className = newTheme;
+  localStorage.setItem('theme', newTheme);
 });
 
 // Carousel functionality — infinite loop, starts centered on card 1 [ 4 ][ 5 ][ 1* ][ 2 ][ 3 ]
