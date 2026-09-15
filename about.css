@@ -30,18 +30,33 @@
     }
 }
 
-@media (min-width: 1024px) and (max-width: 1450px) {
+/* On screens 1450px and below, use a stacked layout and center the title and button */
+@media (max-width: 1450px) {
     .about-section__container {
-        grid-template-columns: 1fr;
+        /* This ensures the image is centered in its grid area */
         text-align: center;
     }
 
-    .about-section__image-container {
-        order: 1;
+    .about-section__content {
+        /* Use flexbox to easily center the button */
+        display: flex;
+        flex-direction: column;
     }
 
-    .about-section__content {
-        order: 2;
+    .about-section__title {
+        /* Explicitly center the title */
+        text-align: center;
+    }
+
+    .about-section__content .button {
+        /* Center the button within the flex container */
+        align-self: center;
+    }
+
+    .about-section__subtitle,
+    .about-section p {
+        /* Keep paragraph text left-aligned for readability */
+        text-align: left;
     }
 }
 

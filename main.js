@@ -1,5 +1,7 @@
 console.clear();
 
+import { WebPet } from './webpet/web-pet.js';
+
 // Simple page load animation trigger - ensures navigation plays on load
 window.addEventListener('load', () => {
   const nav = document.querySelector('.nav');
@@ -7,6 +9,29 @@ window.addEventListener('load', () => {
     nav.classList.add('nav-active');
   }, 150);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        heroSection.style.position = 'relative';
+        const myPet = new WebPet({
+            animal: 'totoro',
+            color: 'gray',
+            container: heroSection,
+            scale: 0.7,
+            message: "Hi there!",
+        });
+
+        const akita = new WebPet({
+            animal: 'dog',
+            color: 'akita',
+            container: heroSection,
+            scale: 0.6,
+            message: "Arf arf!",
+        });
+    }
+});
+
 
 // Hero image 3D tilt on mouse move
 const heroImage = document.querySelector('.hero-image');
@@ -32,8 +57,8 @@ if (heroImage && heroSection) {
     const glowOpacity = 0.5 + intensity * 0.4;
 
     const glow = isDark()
-      ? `drop-shadow(0 8px 32px rgba(0,0,0,0.5)) drop-shadow(0 0 ${glowSize}px rgba(0, 79, 210, ${glowOpacity})) drop-shadow(0 0 ${glowSize * 1.5}px rgba(34, 205, 218, ${glowOpacity * 0.5}))`
-      : `drop-shadow(0 12px 40px rgba(0,0,0,0.2)) drop-shadow(0 0 ${glowSize}px rgba(0, 79, 210, ${glowOpacity * 0.6}))`;
+      ? `drop-shadow(0 8px 18px rgba(0,0,0,0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 28px rgba(255, 255, 255, 0.4))`
+      : `drop-shadow(0 12px 22px rgba(0,0,0,0.3)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9))`;
 
     heroImage.classList.remove('tilt-reset');
     heroImage.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${SCALE_ON_HOVER})`;
@@ -251,4 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
   updateFocus();
   updateStaticState();
   startAutoplay();
+
+
 });

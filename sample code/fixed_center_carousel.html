@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixed Center Seamless Carousel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#111;font-family:Inter,Arial,sans-serif;overflow:hidden}
+.carousel{position:relative;width:100%;max-width:1200px;overflow:hidden;padding:70px 0 100px}
+.carousel-track{display:flex;align-items:center;gap:26px;width:max-content;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.slide{position:relative;flex:0 0 320px;width:320px;height:420px;overflow:hidden;border-radius:22px;background:#222;opacity:.35;transform:scale(.82);filter:grayscale(45%);transition:transform .7s cubic-bezier(.22,.61,.36,1),opacity .7s ease,filter .7s ease,box-shadow .7s ease;flex-shrink:0}
+.slide.landscape{flex-basis:600px;width:600px;height:360px}
+.slide.focused{opacity:1;transform:scale(1.08);filter:grayscale(0%);z-index:5;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.slide img{width:100%;height:100%;display:block;object-fit:cover;transition:transform 1s ease}
+.slide.focused img{transform:scale(1.04)}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92),rgba(0,0,0,.58) 30%,rgba(0,0,0,.12) 70%,transparent);pointer-events:none}
+.card-content{position:absolute;left:26px;right:26px;bottom:26px;z-index:3;color:white}
+.category{display:inline-flex;padding:6px 11px;margin-bottom:12px;border:1px solid rgba(255,255,255,.25);border-radius:100px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.card-title{margin-bottom:8px;font-size:27px;line-height:1.05;font-weight:700;letter-spacing:-.8px;text-shadow:0 3px 20px rgba(0,0,0,.35)}
+.card-caption{max-width:420px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.72)}
+.controls{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;align-items:center;gap:15px;z-index:30}
+.arrow{width:45px;height:45px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.1);color:white;font-size:22px;line-height:1;cursor:pointer;backdrop-filter:blur(12px);transition:background .25s ease,transform .25s ease}
+.arrow:hover{background:rgba(255,255,255,.22);transform:scale(1.08)}
+.arrow:active{transform:scale(.96)}
+.dots{display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:width .3s ease,background .3s ease}
+.dot.active{width:22px;border-radius:20px;background:white}
+.progress{position:absolute;left:50%;bottom:10px;width:150px;height:2px;transform:translateX(-50%);overflow:hidden;border-radius:10px;background:rgba(255,255,255,.12);z-index:30}
+.progress-bar{width:0;height:100%;background:white}
+@media(max-width:900px){.carousel{padding:60px 0 100px}.slide{flex-basis:290px;width:290px;height:390px}.slide.landscape{flex-basis:500px;width:500px;height:300px}}
+@media(max-width:600px){.carousel{padding:50px 0 100px}.carousel-track{gap:18px}.slide{flex-basis:260px;width:260px;height:370px;border-radius:18px}.slide.landscape{flex-basis:330px;width:330px;height:220px}.slide.focused{transform:scale(1.04)}.card-content{left:20px;right:20px;bottom:20px}.card-title{font-size:22px}.card-caption{font-size:12px}.arrow{width:40px;height:40px}}
+</style>
+</head>
+<body>
+<div class="carousel">
+
+<div class="carousel-track">
+
+<!-- CLONE 4 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=85" alt="Lake">
+<div class="card-content"><span class="category">Nature</span><h2 class="card-title">Hidden Places</h2><p class="card-caption">Find beauty in the places less traveled.</p></div>
+</article>
+
+<!-- CLONE 5 -->
+<article class="slide landscape">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=85" alt="Mountain valley">
+<div class="card-content"><span class="category">Adventure</span><h2 class="card-title">Beyond the Horizon</h2><p class="card-caption">Sometimes the best destination is the journey.</p></div>
+</article>
+
+<!-- CARD 1 -->
+<article class="slide focused">
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85" alt="Mountain">
+<div class="card-content"><span class="category">Exploration</span><h2 class="card-title">Into the Wild</h2><p class="card-caption">Discover places where nature takes center stage.</p></div>
+</article>
+
+<!-- CARD 2 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85" alt="Ocean">
+<div class="card-content"><span class="category">Travel</span><h2 class="card-title">Endless Blue</h2><p class="card-caption">A quiet escape surrounded by nothing but ocean.</p></div>
+</article>
+
+<!-- CARD 3 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=85" alt="Lake">
+<div class="card-content"><span class="category">Nature</span><h2 class="card-title">Hidden Places</h2><p class="card-caption">Find beauty in the places less traveled.</p></div>
+</article>
+
+<!-- CARD 4 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=85" alt="Mountain valley">
+<div class="card-content"><span class="category">Adventure</span><h2 class="card-title">Beyond the Horizon</h2><p class="card-caption">Sometimes the best destination is the journey.</p></div>
+</article>
+
+<!-- CARD 5 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=85" alt="Forest">
+<div class="card-content"><span class="category">Escape</span><h2 class="card-title">Into Silence</h2><p class="card-caption">Step away from the noise and reconnect.</p></div>
+</article>
+
+<!-- CLONE 1 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85" alt="Mountain">
+<div class="card-content"><span class="category">Exploration</span><h2 class="card-title">Into the Wild</h2><p class="card-caption">Discover places where nature takes center stage.</p></div>
+</article>
+
+<!-- CLONE 2 -->
+<article class="slide">
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85" alt="Ocean">
+<div class="card-content"><span class="category">Travel</span><h2 class="card-title">Endless Blue</h2><p class="card-caption">A quiet escape surrounded by nothing but ocean.</p></div>
+</article>
+
+</div>
+
+
+<div class="controls">
+<button class="arrow" id="prev" aria-label="Previous slide">‹</button>
+<div class="dots"></div>
+<button class="arrow" id="next" aria-label="Next slide">›</button>
+</div>
+
+<div class="progress"><div class="progress-bar"></div></div>
+</div>
+
+<script>
+const carousel=document.querySelector(".carousel");
+const track=document.querySelector(".carousel-track");
+const slides=[...document.querySelectorAll(".slide")];
+const nextButton=document.querySelector("#next");
+const prevButton=document.querySelector("#prev");
+const dotsContainer=document.querySelector(".dots");
+const progressBar=document.querySelector(".progress-bar");
+
+const REAL_SLIDES=5;
+const FIRST_REAL_INDEX=2;
+const AUTOPLAY_TIME=5000;
+const TRANSITION_TIME=700;
+
+let current=FIRST_REAL_INDEX;
+let autoplayTimer;
+let isMoving=false;
+
+for(let i=0;i<REAL_SLIDES;i++){
+    const dot=document.createElement("button");
+    dot.className="dot";
+    dot.setAttribute("aria-label",`Go to slide ${i+1}`);
+    dot.addEventListener("click",()=>{
+        if(isMoving)return;
+        current=FIRST_REAL_INDEX+i;
+        moveToCurrent(true);
+        restartAutoplay();
+    });
+    dotsContainer.appendChild(dot);
+}
+
+const dots=[...document.querySelectorAll(".dot")];
+
+function getGap(){
+    return parseFloat(getComputedStyle(track).gap);
+}
+
+function calculateOffset(){
+    const carouselCenter=carousel.getBoundingClientRect().width/2;
+    let cardCenter=0;
+
+    for(let i=0;i<current;i++){
+        cardCenter+=slides[i].offsetWidth+getGap();
+    }
+
+    cardCenter+=slides[current].offsetWidth/2;
+
+    return carouselCenter-cardCenter;
+}
+
+function updateFocus(){
+    slides.forEach(slide=>slide.classList.remove("focused"));
+    slides[current].classList.add("focused");
+
+    let dotIndex=current-FIRST_REAL_INDEX;
+    if(dotIndex<0)dotIndex=REAL_SLIDES-1;
+    if(dotIndex>=REAL_SLIDES)dotIndex=0;
+
+    dots.forEach((dot,index)=>{
+        dot.classList.toggle("active",index===dotIndex);
+    });
+}
+
+function moveToCurrent(animate=true){
+    track.style.transition=animate
+        ? `transform ${TRANSITION_TIME}ms cubic-bezier(.22,.61,.36,1)`
+        : "none";
+
+    track.style.transform=`translateX(${calculateOffset()}px)`;
+    updateFocus();
+
+    if(animate){
+        isMoving=true;
+        setTimeout(()=>isMoving=false,TRANSITION_TIME);
+    }
+}
+
+function nextSlide(){
+    if(isMoving)return;
+
+    current++;
+    moveToCurrent(true);
+
+    if(current===FIRST_REAL_INDEX+REAL_SLIDES){
+        setTimeout(()=>{
+            current=FIRST_REAL_INDEX;
+            moveToCurrent(false);
+        },TRANSITION_TIME+10);
+    }
+}
+
+function previousSlide(){
+    if(isMoving)return;
+
+    current--;
+    moveToCurrent(true);
+
+    if(current===FIRST_REAL_INDEX-1){
+        setTimeout(()=>{
+            current=FIRST_REAL_INDEX+REAL_SLIDES-1;
+            moveToCurrent(false);
+        },TRANSITION_TIME+10);
+    }
+}
+
+nextButton.addEventListener("click",()=>{
+    nextSlide();
+    restartAutoplay();
+});
+
+prevButton.addEventListener("click",()=>{
+    previousSlide();
+    restartAutoplay();
+});
+
+function startAutoplay(){
+    clearInterval(autoplayTimer);
+    autoplayTimer=setInterval(nextSlide,AUTOPLAY_TIME);
+}
+
+function startProgress(){
+    progressBar.style.transition="none";
+    progressBar.style.width="0%";
+    progressBar.offsetWidth;
+    progressBar.style.transition=`width ${AUTOPLAY_TIME}ms linear`;
+    progressBar.style.width="100%";
+}
+
+function restartAutoplay(){
+    startAutoplay();
+    startProgress();
+}
+
+carousel.addEventListener("mouseenter",()=>{
+    clearInterval(autoplayTimer);
+});
+
+carousel.addEventListener("mouseleave",()=>{
+    startAutoplay();
+    startProgress();
+});
+
+window.addEventListener("resize",()=>{
+    moveToCurrent(false);
+});
+
+track.style.transition="none";
+moveToCurrent(false);
+
+requestAnimationFrame(()=>{
+    track.style.transition=
+        `transform ${TRANSITION_TIME}ms cubic-bezier(.22,.61,.36,1)`;
+});
+
+startAutoplay();
+startProgress();
+</script>
+</body>
+</html>
