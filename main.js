@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container: heroSection,
             scale: 0.7,
             message: "Hi there!",
+            base: './webpet/pets'
         });
 
         const akita = new WebPet({
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container: heroSection,
             scale: 0.6,
             message: "Arf arf!",
+            base: './webpet/pets'
         });
     }
 });
