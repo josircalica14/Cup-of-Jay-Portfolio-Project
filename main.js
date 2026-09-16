@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             animal: 'totoro',
             color: 'gray',
             container: heroSection,
-            scale: 0.7,
+            scale: 0.5,
             message: "Hi there!",
             base: basePath
         });
@@ -32,8 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
             animal: 'dog',
             color: 'akita',
             container: heroSection,
-            scale: 0.6,
+            scale: 0.5,
             message: "Arf arf!",
+            base: basePath
+        });
+    }
+
+    const aboutSection = document.querySelector('.about-section');
+    if (aboutSection) {
+        aboutSection.style.position = 'relative';
+
+        // Determine base path for assets based on environment
+        const isLive = window.location.hostname === 'josircalica14.github.io';
+        const basePath = isLive ? '/Cup-of-Jay-Portfolio-Project/webpet/sprites' : './webpet/sprites';
+
+        const rex = new WebPet({
+            animal: 'rex',
+            color: 'dino_rex',
+            container: aboutSection,
+            scale: 0.3,
+            message: "Rwar!",
             base: basePath
         });
     }

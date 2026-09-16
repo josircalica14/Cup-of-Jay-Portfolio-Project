@@ -19,8 +19,65 @@ export class WebPet {
     this.mouse = null;
     this.isHovering = false;
     this.container = options.container || document.body;
+    this.gifCache = {};
+    this.boundingBoxes = {};
 
     this.init();
+    this.loadGifs();
+  }
+
+  async loadGifs() {
+    const { behavior } = this.config;
+    for (const action of behavior.actions) {
+      const gifUrl = this.config.gifUrl(action);
+      if (!this.gifCache[gifUrl]) {
+        const img = document.createElement('img');
+        // libgif-js needs the image to be in the DOM to load it.
+        // We can hide it so it doesn't affect the layout.
+        img.style.position = 'absolute';
+        img.style.left = '-9999px';
+        img.style.top = '-9999px';
+        document.body.appendChild(img);
+
+        this.gifCache[gifUrl] = new Promise(resolve => {
+            const superGif = new SuperGif({ gif: img, auto_play: false });
+            superGif.load_url(gifUrl, () => {
+                const frames = superGif.get_frames();
+                let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+                for (const frame of frames) {
+                    const imageData = frame.data;
+                    const { width, height, data } = imageData;
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const alpha = data[(y * width + x) * 4 + 3];
+                            if (alpha > 0) {
+                                if (x < minX) minX = x;
+                                if (y < minY) minY = y;
+                                if (x > maxX) maxX = x;
+                                if (y > maxY) maxY = y;
+                            }
+                        }
+                    }
+                }
+                const canvas = superGif.get_canvas();
+                if (canvas && canvas.parentNode) {
+                    canvas.parentNode.remove();
+                }
+                const boundingBox = {
+                    x: minX,
+                    y: minY,
+                    width: maxX - minX,
+                    height: maxY - minY,
+                    canvasWidth: superGif.get_canvas().width,
+                    canvasHeight: superGif.get_canvas().height,
+                };
+                this.boundingBoxes[action] = boundingBox;
+                resolve(superGif);
+            });
+        });
+      }
+    }
   }
 
   resolveConfig(props) {
@@ -136,7 +193,16 @@ export class WebPet {
 
     this.onMouseMove = (e) => {
       const bounds = this.container.getBoundingClientRect();
-      this.mouse = { x: e.clientX - bounds.left, y: e.clientY - bounds.top };
+      if (
+        e.clientX >= bounds.left &&
+        e.clientX <= bounds.right &&
+        e.clientY >= bounds.top &&
+        e.clientY <= bounds.bottom
+      ) {
+        this.mouse = { x: e.clientX - bounds.left, y: e.clientY - bounds.top };
+      } else {
+        this.mouse = null;
+      }
     };
     window.addEventListener("mousemove", this.onMouseMove);
   }
@@ -172,8 +238,23 @@ export class WebPet {
   }
 
   paint() {
-    const width = 100 * this.config.scale;
-    this.wrapper.style.left = `${this.state.x - width / 2}px`;
+    // Get the specific scale for the current animation, or default to 1.0
+    const animationScale = this.config.behavior.animationScales?.[this.state.action] ?? 1.0;
+    const width = 100 * this.config.scale * animationScale;
+
+    const boundingBox = this.boundingBoxes[this.state.action];
+    if (boundingBox) {
+        const scaledWidth = boundingBox.canvasWidth * this.config.scale * animationScale;
+        const scaledHeight = boundingBox.canvasHeight * this.config.scale * animationScale;
+        this.wrapper.style.width = `${scaledWidth}px`;
+        this.wrapper.style.height = `${scaledHeight}px`;
+        this.wrapper.style.left = `${this.state.x - scaledWidth / 2}px`;
+    } else {
+        this.wrapper.style.width = `${width}px`;
+        this.wrapper.style.height = `${width}px`;
+        this.wrapper.style.left = `${this.state.x - width / 2}px`;
+    }
+
     const src = this.config.gifUrl(this.state.action);
 
     if (this.painted.src !== src) {
@@ -195,7 +276,17 @@ export class WebPet {
     if (this.config.paused) return;
 
     const bounds = this.container.getBoundingClientRect();
-    const size = 100 * this.config.scale;
+    
+    // Responsive scaling
+    const baseWidth = 1440; // The width at which the pet is at its max scale
+    const responsiveScale = Math.min(1, bounds.width / baseWidth);
+    const finalScale = this.config.scale * responsiveScale;
+    const size = 100 * finalScale;
+
+    const boundingBox = this.boundingBoxes[this.state.action];
+
+    this.wrapper.style.width = `${size}px`;
+    this.wrapper.style.height = `${size}px`;
 
     this.state = stepPet(
       this.state,
@@ -204,7 +295,7 @@ export class WebPet {
         boundsWidth: bounds.width,
         boundsHeight: bounds.height,
         mouse: this.mouse,
-        sprite: { width: size, height: size },
+        sprite: { width: size, height: size, boundingBox },
         isHovering: this.isHovering,
       },
       this.config.behavior
