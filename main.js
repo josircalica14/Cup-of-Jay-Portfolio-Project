@@ -14,13 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero-section');
     if (heroSection) {
         heroSection.style.position = 'relative';
+
+        // Determine base path for assets based on environment
+        const isLive = window.location.hostname === 'josircalica14.github.io';
+        const basePath = isLive ? '/Cup-of-Jay-Portfolio-Project/webpet/pets' : './webpet/pets';
+
         const myPet = new WebPet({
             animal: 'totoro',
             color: 'gray',
             container: heroSection,
             scale: 0.7,
             message: "Hi there!",
-            base: './webpet/pets'
+            base: basePath
         });
 
         const akita = new WebPet({
@@ -29,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container: heroSection,
             scale: 0.6,
             message: "Arf arf!",
-            base: './webpet/pets'
+            base: basePath
         });
     }
 });
