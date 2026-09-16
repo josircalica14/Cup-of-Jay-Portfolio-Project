@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Determine base path for assets based on environment
         const isLive = window.location.hostname === 'josircalica14.github.io';
-        const basePath = isLive ? '/Cup-of-Jay-Portfolio-Project/webpet/pets' : './webpet/pets';
+        const basePath = isLive ? '/Cup-of-Jay-Portfolio-Project/webpet/sprites' : './webpet/sprites';
 
         const myPet = new WebPet({
             animal: 'totoro',

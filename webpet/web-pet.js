@@ -31,7 +31,7 @@ export class WebPet {
       props.color && (colors.length === 0 || colors.includes(props.color))
         ? props.color
         : colors[0] ?? null;
-    const base = (props.mediaBaseUrl ?? "/webpet/sprites").replace(/\/*$/, "");
+    const base = (props.base ?? "./webpet/sprites").replace(/\/*$/, "");
     const behavior = {
       ...DEFAULT_PET_BEHAVIOR,
       ...manifest,
