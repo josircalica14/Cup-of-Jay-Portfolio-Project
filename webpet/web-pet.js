@@ -112,7 +112,7 @@ export class WebPet {
   }
 
   init() {
-    this.wrapper.style.position = "absolute";
+    this.wrapper.style.position = this.options.position || "absolute";
     this.wrapper.style.bottom = "0";
     this.wrapper.style.left = "0";
     this.wrapper.style.width = `${100 * this.config.scale}px`;
@@ -244,11 +244,19 @@ export class WebPet {
 
     const boundingBox = this.boundingBoxes[this.state.action];
     if (boundingBox) {
-        const scaledWidth = boundingBox.canvasWidth * this.config.scale * animationScale;
-        const scaledHeight = boundingBox.canvasHeight * this.config.scale * animationScale;
-        this.wrapper.style.width = `${scaledWidth}px`;
-        this.wrapper.style.height = `${scaledHeight}px`;
-        this.wrapper.style.left = `${this.state.x - scaledWidth / 2}px`;
+        const scaledCanvasWidth = boundingBox.canvasWidth * this.config.scale * animationScale;
+        const scaledCanvasHeight = boundingBox.canvasHeight * this.config.scale * animationScale;
+        const scaledBoundingBoxWidth = boundingBox.width * this.config.scale * animationScale;
+        const scaledBoundingBoxHeight = boundingBox.height * this.config.scale * animationScale;
+        const scaledBoundingBoxX = boundingBox.x * this.config.scale * animationScale;
+        const scaledBoundingBoxY = boundingBox.y * this.config.scale * animationScale;
+
+        this.wrapper.style.width = `${scaledBoundingBoxWidth}px`;
+        this.wrapper.style.height = `${scaledBoundingBoxHeight}px`;
+        this.wrapper.style.left = `${this.state.x - scaledBoundingBoxWidth / 2}px`;
+        
+        this.sprite.style.backgroundSize = `${scaledCanvasWidth}px ${scaledCanvasHeight}px`;
+        this.sprite.style.backgroundPosition = `-${scaledBoundingBoxX}px -${scaledBoundingBoxY}px`;
     } else {
         this.wrapper.style.width = `${width}px`;
         this.wrapper.style.height = `${width}px`;
@@ -284,9 +292,6 @@ export class WebPet {
     const size = 100 * finalScale;
 
     const boundingBox = this.boundingBoxes[this.state.action];
-
-    this.wrapper.style.width = `${size}px`;
-    this.wrapper.style.height = `${size}px`;
 
     this.state = stepPet(
       this.state,

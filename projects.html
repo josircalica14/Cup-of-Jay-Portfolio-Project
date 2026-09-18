@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cup of Jay - Creative Developer & Designer portfolio">
+    <meta name="description" content="Projects by Cup of Jay">
+    <title>Projects | Cup of Jay</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="projects.css">
     <link rel="stylesheet" href="theme-toggle.css">
-    <title>Cup of Jay | Creative Developer & Designer</title>
     <script>
-        // Apply saved theme before page renders to prevent flash
         (function() {
             const theme = localStorage.getItem('theme') || 'dark-mode';
             document.documentElement.className = theme;
         })();
     </script>
 </head>
-
 <body class="dark-mode">
     <!-- Mobile Navigation (outside hero so fixed positioning works correctly) -->
     <input type="checkbox" id="mobile-nav-toggle" class="mobile-nav__checkbox">
@@ -52,8 +51,8 @@
             <li><a href="projects.html">Projects</a></li>
             <li><a href="#">Gallery</a></li>
             <li><a href="#">Blogs</a></li>
-            <li><a href="#">About</a></li>
             <li><a href="#">Contact</a></li>
+            <li><a href="#">About</a></li>
         </ul>
     </nav>
 
@@ -111,91 +110,46 @@
         </div>
     </div>
 
-    <div class="hero-section">
-        <div class="hero-title">
-            <h1 class="anim-typewriter">Cup of Jay</h1>
-            <p class="hero-subtitle">
-    <span class="odometer-container">
-        <span class="odometer-item">Developer</span>
-        <span class="odometer-item">Photography</span>
-        <span class="odometer-item">Photo Editing</span>
-        <span class="odometer-item">Developer</span>
-    </span>
-</p>
-            <img class="hero-image" src="./hero_background/background1v2.png" alt="Hero illustration">
-        </div>
+    <header class="projects-header">
+        <h1 class="projects-header__title">My Work</h1>
+        <p class="projects-header__subtitle">A selection of projects that I'm proud of.</p>
+    </header>
 
-        <!-- Scroll Indicator -->
-        <div class="hero-scroll" aria-hidden="true">
-            <span class="hero-scroll__mouse">
-                <span class="hero-scroll__wheel"></span>
-            </span>
-            <span class="hero-scroll__text">Scroll</span>
-        </div>
-    </div>
-
-    <hr class="section-separator">
-
-    <!-- Features Works Section -->
-    <section class="features-projects">
-        <div class="features-projects__container">
-            <h2 class="features-projects__title">Featured Projects</h2>
-            <div class="carousel">
-                <div class="carousel__track">
-                    <div class="carousel__slide">
-                        <div class="card">
-                            <div class="card__inner">
-                                <img class="card__cover" src="https://picsum.photos/600/800?random=1" alt="E-Commerce Platform">
-                                <div class="card__body">
-                                    <h2 class="card__header">
-                                        <span class="chips chip-title">ScanPasada </span>
-                                    </h2>
-                                    <p>Jeepney Terminal Queueing System.</p>
-                                    <a href="scanpasada.html" class="button">View Project
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel__slide">
-                        <div class="card">
-                            <div class="card__inner">
-                                <img class="card__cover" src="https://picsum.photos/600/800?random=2" alt="Mobile Banking App">
-                                <div class="card__body">
-                                    <h2 class="card__header">
-                                        <span class="chips chip-title">RetroWalk</span>
-                                    </h2>
-                                    <p>Inside Out Memory Orb Themed Virtual Interactive Museum </p>
-                                    <a href="nyerk.html" class="button">View Project
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <main class="project-grid">
+        <div class="project-item">
+            <div class="project-item__image-wrapper">
+                <a href="#"><img src="https://picsum.photos/800/600?random=1" alt="Project 1" class="project-item__image"></a>
+            </div>
+            <div class="project-item__content">
+                <h2 class="project-item__title">ScanPasada</h2>
+                <div class="project-item__description">
+                    <p>A queueing system for a local jeepney terminal, designed to streamline passenger flow.</p>
                 </div>
-                <button class="carousel__button carousel__button--prev" aria-label="Previous slide">←</button>
-                <button class="carousel__button carousel__button--next" aria-label="Next slide">→</button>
-                <div class="carousel__indicators"></div>
+                <div class="project-item__tags">
+                    <span class="chip">Vue.js</span>
+                    <span class="chip">Firebase</span>
+                    <span class="chip">Figma</span>
+                </div>
             </div>
         </div>
-    </section>
-
-    <hr class="section-separator">
-
-    <!-- About Section -->
-    <section class="about-section">
-        <div class="about-section__container">
-            <div class="about-section__image-container">
-                <img src="./assets/profile_photo/af143130-1011-4f02-85a0-5e2219a06987.jpg" alt="About Me" class="about-section__image">
+        <div class="project-item">
+            <div class="project-item__image-wrapper">
+                <a href="#"><img src="https://picsum.photos/800/600?random=2" alt="Project 2" class="project-item__image"></a>
             </div>
-            <div class="about-section__content">
-                <h2 class="about-section__title">About Me</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.</p>
-                <a href="#" class="button">Read More</a>
+            <div class="project-item__content">
+                <h2 class="project-item__title">RetroWalk</h2>
+                <div class="project-item__description">
+                    <p>An interactive virtual museum inspired by the movie Inside Out, built with Three.js.</p>
+                </div>
+                <div class="project-item__tags">
+                    <span class="chip">Three.js</span>
+                    <span class="chip">Blender</span>
+                    <span class="chip">JavaScript</span>
+                </div>
             </div>
         </div>
-    </section>
+        <!-- Add more project items here -->
+    </main>
 
     <script type="module" src="main.js"></script>
     <script src="lib/libgif.js"></script>

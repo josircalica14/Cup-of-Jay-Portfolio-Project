@@ -25,7 +25,7 @@ html {
 /* ===== CORE CSS VARIABLES - SINGLE SOURCE OF TRUTH, EASY TO UPDATE ===== */
 :root {
     /* Navbar variables - separated for independent customization */
-    --nav-top-spacing: 0.3rem;
+    --nav-top-spacing: 0.6rem;
     --mobile-logo-top-spacing: 1.5rem; /* Mobile logo top position (separate from desktop) */
     --nav-logo-size: 8rem;
     --nav-item-gap: 3.5rem;
@@ -39,8 +39,13 @@ html {
     /* Theme colors */
     --dark-bg-primary: #242424;
     --light-bg-primary: #ffffff;
+    --background-secondary: #f1f1f1;
+    --dark-background-secondary: #1a1a1a;
     --dark-text-primary: #e0e0e0;
     --light-text-primary: #222222;
+    --border-color: #e0e0e0;
+    --chip-bg: #e0e0e0;
+    --chip-text: #222222;
     
     /* Spacing system */
     --spacing-xs: 0.5rem;
@@ -52,6 +57,9 @@ html {
     /* Transitions */
     --transition-normal: 0.35s ease;
     --transition-slow: 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* Typewriter cursor color */
+    --typewriter-cursor-color: rgba(255, 255, 255, 0.75);
 }
 
 /* ===== MOBILE NAVIGATION BASE STYLES ===== */
@@ -472,11 +480,16 @@ body {
 body.dark-mode {
     background-color: #242424;
     color: #e0e0e0;
+    --background-secondary: var(--dark-background-secondary);
+    --border-color: #333333;
+    --chip-bg: #333333;
+    --chip-text: #e0e0e0;
 }
 
 body.light-mode {
     background-color: #ffffff;
     color: #222222;
+    --typewriter-cursor-color: rgba(0, 0, 0, 0.75);
 }
 
 
@@ -547,21 +560,72 @@ body.light-mode .hero-image {
     width: fit-content;
 }
 
+
+
 h1 {
     font-family: 'HeroFont', sans-serif;
     color: #e8e8e8;
     font-size: 4rem;
     letter-spacing: 1.5px;
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: translateY(1.2rem);
-    animation: heroFadeIn 0.8s ease 0.2s forwards;
+    margin: 0 auto;
+    letter-spacing: .15em;
 }
+
+.anim-typewriter {
+    border-right: 3px solid var(--typewriter-cursor-color);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typewriter 4s steps(35) 1s infinite normal both,
+        blinkTextCursor 750ms infinite normal;
+    max-width: fit-content;
+}
+
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    40%, 100% {
+        width: 100%;
+    }
+}
+
+@keyframes blinkTextCursor {
+    from {
+        border-right-color: var(--typewriter-cursor-color);
+    }
+    to {
+        border-right-color: transparent;
+    }
+}
+
+
+@media (max-width: 1450px) {
+    .hero-title {
+        margin-right: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        margin: 0;
+        width: fit-content;
+    }
+}
+
+
 
 @media (max-width: 767px) {
     h1 { 
         font-size: 2.4rem;
         text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .anim-typewriter {
+        animation: typewriter 2.4s steps(10) 1s infinite normal both,
+            blinkTextCursor 500ms infinite normal;
     }
 }
 
@@ -570,12 +634,22 @@ h1 {
         font-size: 1.8rem;
         text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
     }
+
+    .anim-typewriter {
+        animation: typewriter 1.8s steps(10) 1s infinite normal both,
+            blinkTextCursor 500ms infinite normal;
+    }
 }
 
 @media (max-width: 359px) {
     h1 { 
         font-size: 1.4rem;
         text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+
+    .anim-typewriter {
+        animation: typewriter 1.4s steps(10) 1s infinite normal both,
+            blinkTextCursor 500ms infinite normal;
     }
 }
 
@@ -586,12 +660,43 @@ h1 {
     color: rgba(214, 214, 214, 0.6);
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 0.6rem;
+    margin-top: 1.6rem;
+    position: relative;
+    display: inline-block;
+    height: 1.2em; /* Adjust to fit font size */
+    overflow: hidden;
     opacity: 0;
     transform: translateY(0.8rem);
     animation: heroFadeIn 0.7s ease 0.5s forwards;
-    position: relative;
+}
+
+.odometer-container {
     display: inline-block;
+    animation: roll 10s 1.2s infinite;
+    will-change: transform;
+}
+
+.odometer-item {
+    display: block;
+    line-height: 1.2em; /* Match hero-subtitle height */
+}
+
+@keyframes roll {
+    0%, 10% {
+        transform: translateY(0);
+    }
+    20%, 30% {
+        transform: translateY(-1.2em); /* Move up by one item height */
+    }
+    40%, 50% {
+        transform: translateY(-2.4em); /* Move up by two item heights */
+    }
+    60%, 70% {
+        transform: translateY(-3.6em); /* Move up by three item heights */
+    }
+    80%, 100% {
+        transform: translateY(0); /* Loop back to the start */
+    }
 }
 
 /* Thin accent lines flanking the subtitle */
@@ -1355,6 +1460,17 @@ body.light-mode .carousel::after {
     opacity: 1;
 }
 
+.carousel__slide.is-active .card:hover {
+    transform: translateY(-2rem) scale(1.02);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 30px rgba(255,255,255,0.07),
+        0 0 60px rgba(34,205,218,0.06);
+}
+
 /* Static view (all cards visible) — disable bokeh effect */
 .carousel__track--static .carousel__slide .card {
     filter: none;
@@ -1439,14 +1555,14 @@ img {
 }
 
 .card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-10px);
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 8px 24px rgba(0,0,0,0.5),
-        0 20px 60px rgba(0,0,0,0.4),
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 0 30px rgba(255,255,255,0.07),
-        0 0 60px rgba(34,205,218,0.06);
+        inset 0 1px 0 rgba(255,255,255,1),
+        0 8px 24px rgba(0,0,0,0.12),
+        0 24px 64px rgba(0,0,0,0.2),
+        0 40px 80px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(0,0,0,0.08),
+        0 0 48px rgba(0,79,210,0.08);
 }
 
 .card__inner {
@@ -1587,6 +1703,17 @@ body.light-mode .card__header .chips {
     font-size: 0.85rem;
 }
 
+body:not(.light-mode) .card:hover {
+    transform: translateY(-10px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 30px rgba(255,255,255,0.07),
+        0 0 60px rgba(34,205,218,0.06);
+}
+
 /* Light mode cards */
 body.light-mode .card {
     color: #000000;
@@ -1610,6 +1737,21 @@ body.light-mode .card:hover {
         0 0 0 1px rgba(0,0,0,0.08),
         0 0 48px rgba(0,79,210,0.08);
     transform: translateY(-10px);
+}
+
+body.light-mode .carousel__slide.is-active .card:hover {
+    transform: translateY(-2rem) scale(1.02);
+}
+
+body:not(.light-mode) .carousel__slide.is-active .card:hover {
+    transform: translateY(-2rem) scale(1.02);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 30px rgba(255,255,255,0.07),
+        0 0 60px rgba(34,205,218,0.06);
 }
 
 body.light-mode .card__inner {

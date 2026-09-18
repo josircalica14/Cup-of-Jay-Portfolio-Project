@@ -98,6 +98,12 @@
 .about-section__title {
     font-family: 'HeroFont', sans-serif;
     font-size: 3rem;
+
+/* Active nav link style */
+.nav__list-item--active a {
+    color: var(--brand-primary); /* Or any color that indicates 'active' */
+    font-weight: bold; /* Example: make it bold */
+}
     margin-bottom: 0.5rem;
     color: var(--text-color);
 }

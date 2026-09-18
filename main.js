@@ -8,6 +8,25 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     nav.classList.add('nav-active');
   }, 150);
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+    // Remove active class from all nav links
+    document.querySelectorAll('.nav__main-list .nav__list-item').forEach(item => {
+        item.classList.remove('nav__list-item--active');
+    });
+
+    // Add active class to the current page's nav link
+    if (currentPage === 'index.html') {
+        const homeLink = document.querySelector('.nav__main-list a[href="index.html"]');
+        if (homeLink) {
+            homeLink.parentElement.classList.add('nav__list-item--active');
+        }
+    } else if (currentPage === 'projects.html') {
+        const projectsLink = document.querySelector('.nav__main-list a[href="projects.html"]');
+        if (projectsLink) {
+            projectsLink.parentElement.classList.add('nav__list-item--active');
+        }
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -49,10 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const rex = new WebPet({
             animal: 'rex',
             color: 'dino_rex',
-            container: aboutSection,
+            container: document.body,
             scale: 0.3,
             message: "Rwar!",
-            base: basePath
+            base: basePath,
+            position: 'fixed'
         });
     }
 });
@@ -134,6 +154,8 @@ themeCheckbox.addEventListener('change', () => {
 // Carousel functionality — infinite loop, starts centered on card 1 [ 4 ][ 5 ][ 1* ][ 2 ][ 3 ]
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.querySelector('.carousel__track');
+  if (!track) return; // Exit if carousel is not on this page
+
   const originalSlides = Array.from(document.querySelectorAll('.carousel__slide'));
   const prevButton = document.querySelector('.carousel__button--prev');
   const nextButton = document.querySelector('.carousel__button--next');
