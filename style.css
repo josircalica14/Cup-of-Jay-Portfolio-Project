@@ -733,19 +733,72 @@ body.light-mode .hero-console__row--glow {
 
 /* ── Hero Subtitle ── */
 .hero-subtitle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-family: 'NavBarFont', sans-serif;
     font-size: 1.25rem;
     color: rgba(214, 214, 214, 0.6);
     letter-spacing: 3px;
     text-transform: uppercase;
-    position: relative;
-    display: inline-block;
-    height: 1.2em; /* Adjust to fit font size */
-    overflow: hidden;
     opacity: 0;
     transform: translateY(0.8rem);
     animation: heroFadeIn 0.7s ease 0.5s forwards;
     text-align: center;
+}
+
+/* Row housing the hairline accents and the rolling word */
+.hero-subtitle__machine {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.1em;
+}
+
+/* Asymmetric double-line technical brackets — top-left and bottom-right,
+   nested strokes like an engineering drawing */
+.hero-subtitle__lamp {
+    width: 0.85em;
+    height: 0.85em;
+    flex-shrink: 0;
+    filter:
+        drop-shadow(0 0 4px rgba(34, 205, 218, 0.8))
+        drop-shadow(0 0 10px rgba(34, 205, 218, 0.4));
+}
+
+.hero-subtitle__lamp:first-of-type {
+    align-self: flex-start;
+    margin-top: -0.32em; /* Reach above the line for a true top-left corner */
+    border-top: 2px solid #22cdda;
+    border-left: 2px solid #22cdda;
+    box-shadow:
+        -6px -6px 0 -2.5px rgba(34, 205, 218, 0.75),
+        inset 6px 6px 0 -3.1px rgba(34, 205, 218, 0.75);
+}
+
+.hero-subtitle__lamp:last-of-type {
+    align-self: flex-end;
+    margin-bottom: -0.32em; /* Reach below the line for a true bottom-right corner */
+    border-bottom: 2px solid #22cdda;
+    border-right: 2px solid #22cdda;
+    box-shadow:
+        6px 6px 0 -2.5px rgba(34, 205, 218, 0.75),
+        inset -6px -6px 0 -3.1px rgba(34, 205, 218, 0.75);
+}
+
+/* Reveal window for the rolling word.
+   The glow is applied as a drop-shadow filter on this element (not text-shadow
+   on the text alone) because filters render outside the element's own
+   overflow clipping — the glow escapes the 1.2em roll window and blooms
+   around the letters instead of being cut off. */
+.hero-subtitle__window {
+    display: block;
+    height: 1.2em;
+    overflow: hidden;
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.55))
+        drop-shadow(0 0 12px rgba(255, 255, 255, 0.35))
+        drop-shadow(0 0 28px rgba(255, 255, 255, 0.2));
 }
 
 .odometer-container {
@@ -757,6 +810,61 @@ body.light-mode .hero-console__row--glow {
 .odometer-item {
     display: block;
     line-height: 1.2em; /* Match hero-subtitle height */
+    letter-spacing: 0.22em;
+    margin-right: -0.22em; /* Recenter — trailing letter-spacing gap */
+    color: #f5f5f5;
+    text-shadow: none; /* Glow comes from the window's drop-shadow filter (text-shadow would clip into a box) */
+}
+
+/* Supporting tagline beneath the rolling word */
+.hero-subtitle__tagline {
+    display: block;
+    margin-top: 2rem; /* Clear the bottom bracket, which hangs below the roll line */
+    margin-right: -0.34em; /* Recenter — trailing letter-spacing gap */
+    font-size: 0.62em;
+    letter-spacing: 0.34em;
+    color: rgba(214, 214, 214, 0.45);
+    opacity: 0;
+    transform: translateY(0.4rem);
+    animation: heroFadeIn 0.8s ease 0.95s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-subtitle__tagline {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+body.light-mode .odometer-item {
+    color: #000000;
+    text-shadow: none;
+}
+
+body.light-mode .hero-subtitle__window {
+    filter: none;
+}
+
+/* Light mode: deeper blue brackets on the cream background */
+body.light-mode .hero-subtitle__lamp:first-of-type {
+    border-color: #004fd2;
+    box-shadow:
+        -6px -6px 0 -2.5px rgba(0, 79, 210, 0.6),
+        inset 6px 6px 0 -3.1px rgba(0, 79, 210, 0.6);
+    filter: drop-shadow(0 0 3px rgba(0, 79, 210, 0.5));
+}
+
+body.light-mode .hero-subtitle__lamp:last-of-type {
+    border-color: #004fd2;
+    box-shadow:
+        6px 6px 0 -2.5px rgba(0, 79, 210, 0.6),
+        inset -6px -6px 0 -3.1px rgba(0, 79, 210, 0.6);
+    filter: drop-shadow(0 0 3px rgba(0, 79, 210, 0.5));
+}
+
+body.light-mode .hero-subtitle__tagline {
+    color: rgba(34, 34, 34, 0.5);
 }
 
 @keyframes roll {
@@ -777,38 +885,21 @@ body.light-mode .hero-console__row--glow {
     }
 }
 
-/* Thin accent lines flanking the subtitle */
-.hero-subtitle::before,
-.hero-subtitle::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 2rem;
-    height: 1px;
-    background: rgba(34, 205, 218, 0.4);
-}
-
-.hero-subtitle::before { right: calc(100% + 0.75rem); }
-.hero-subtitle::after  { left:  calc(100% + 0.75rem); }
-
-@media (max-width: 1079px) {
-    .hero-subtitle { font-size: 1rem; letter-spacing: 1.5px; }
-}
-
-@media (max-width: 899px) {
-    .hero-subtitle { font-size: 0.9rem; letter-spacing: 1px; }
-}
-
 @media (max-width: 767px) {
-    .hero-subtitle { font-size: 0.8rem; letter-spacing: 1.5px; }
+    .hero-subtitle { font-size: 0.85rem; }
+    .hero-subtitle__lamp { border-width: 1.5px; }
 }
 
 @media (max-width: 479px) {
-    .hero-subtitle { font-size: 0.7rem; letter-spacing: 1px; }
+    .hero-subtitle { font-size: 0.75rem; }
+    .hero-subtitle__lamp {
+        border-width: 1.5px;
+        box-shadow: none; /* Secondary stroke off at small sizes */
+    }
 }
 
 @media (max-width: 359px) {
-    .hero-subtitle { font-size: 0.6rem; }
+    .hero-subtitle { font-size: 0.65rem; }
 }
 
 body.light-mode .hero-subtitle {
@@ -912,10 +1003,6 @@ body.light-mode h1 {
     body.light-mode h1 {
         text-shadow: none;
     }
-}
-
-body.light-mode .hero-subtitle {
-    color: rgba(34, 34, 34, 0.6);
 }
 
 /* ── FLOATING NAVBAR: Items free-floating above hero ── */
@@ -1301,7 +1388,6 @@ body.light-mode .nav__list-item a:hover {
     }
     .hero-subtitle {
         font-size: clamp(0.85rem, 2.5vw, 1rem);
-        letter-spacing: 1.7px;
     }
     .hero-image {
         margin-top: 2.5rem;
@@ -1352,9 +1438,7 @@ body.light-mode .nav__list-item a:hover {
     }
     .hero-subtitle {
         font-size: clamp(0.75rem, 2.2vw, 0.9rem);
-        letter-spacing: 1.5px;
         margin-top: 0.5rem;
-        text-align: center;
     }
     .hero-image {
         position: relative;

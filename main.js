@@ -11,7 +11,7 @@ function initHeroConsole() {
   const sharpRow = consoleElement.querySelector('.hero-console__row--sharp');
   const words = ['Cup of Jay', 'Neon Terminal.', 'Made with Love.'];
   const darkModeColors = ['#3d81ff', '#3ff0b8', '#ff9e9e'];
-  const lightModeColors = ['#000000', '#000000', '#000000'];
+  const lightModeColors = ['#121212', '#121212', '#121212'];
   const getThemeColors = () => document.documentElement.classList.contains('light-mode')
     ? lightModeColors
     : darkModeColors;
