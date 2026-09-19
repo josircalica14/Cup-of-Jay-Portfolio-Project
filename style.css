@@ -499,7 +499,7 @@ body.light-mode {
     width: 100%;
     height: 44rem;
     overflow: hidden;
-    background-color: #1a1c1e; /* Dark mode background - current color */
+    background-color: #141414; /* Dark mode background - current color */
     border-bottom-left-radius: 2rem;
     border-bottom-right-radius: 2rem;
     position: relative;
@@ -576,7 +576,7 @@ body.dark-mode h1 {
 }
 
 h1 {
-    font-family: 'HeroFont', sans-serif;
+    font-family: 'Khula', sans-serif;
     color: #e8e8e8;
     font-size: 4rem;
     letter-spacing: 1.5px;
@@ -585,30 +585,90 @@ h1 {
     letter-spacing: .15em;
 }
 
-.anim-typewriter {
-    border-right: 3px solid var(--typewriter-cursor-color);
-    white-space: nowrap;
-    overflow: hidden;
-    animation: typewriter 4s steps(35) 1s infinite normal both,
-        blinkTextCursor 750ms infinite normal;
-    max-width: fit-content;
+@property --hero-console-shadow-color {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #ff9e9e;
 }
 
-@keyframes typewriter {
-    from {
-        width: 0;
-    }
-    40%, 100% {
-        width: 100%;
-    }
+.hero-console {
+    --hero-console-shadow-color: #ff9e9e;
+    position: relative;
+    display: block;
+    width: fit-content;
+    max-width: 90vw;
+    margin: 0 auto;
+    color: #e8e8e8;
+    line-height: 1.15;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-shadow: none;
 }
 
-@keyframes blinkTextCursor {
-    from {
-        border-right-color: var(--typewriter-cursor-color);
-    }
-    to {
-        border-right-color: transparent;
+body.dark-mode .hero-console,
+body.light-mode .hero-console {
+    text-shadow: none;
+}
+
+.hero-console__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-console__row--sharp {
+    position: relative;
+    z-index: 2;
+    transition: color 1s ease-in-out;
+}
+
+.hero-console__row--glow {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    color: var(--hero-console-shadow-color);
+    pointer-events: none;
+    transition: color 1s ease-in-out;
+    animation: hero-console-pulse 6s ease-in-out infinite;
+}
+
+.hero-console__row--tight {
+    filter: blur(6px);
+    opacity: 0.9;
+}
+
+.hero-console__row--wide {
+    filter: blur(24px);
+    opacity: 0.75;
+}
+
+.hero-console__row--wider {
+    filter: blur(48px);
+    opacity: 0.6;
+}
+
+.hero-console__underscore {
+    display: inline-block;
+    position: relative;
+    top: -0.05em;
+    left: 6px;
+}
+
+.hero-console__underscore--hidden {
+    opacity: 0;
+}
+
+@keyframes hero-console-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-console__row--glow {
+        animation: none;
     }
 }
 
@@ -640,10 +700,6 @@ h1 {
         text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 0, 0, 0.5);
     }
 
-    .anim-typewriter {
-        animation: typewriter 2.4s steps(10) 1s infinite normal both,
-            blinkTextCursor 500ms infinite normal;
-    }
 }
 
 @media (max-width: 479px) {
@@ -652,10 +708,6 @@ h1 {
         text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
     }
 
-    .anim-typewriter {
-        animation: typewriter 1.8s steps(10) 1s infinite normal both,
-            blinkTextCursor 500ms infinite normal;
-    }
 }
 
 @media (max-width: 359px) {
@@ -664,10 +716,6 @@ h1 {
         text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.6);
     }
 
-    .anim-typewriter {
-        animation: typewriter 1.4s steps(10) 1s infinite normal both,
-            blinkTextCursor 500ms infinite normal;
-    }
 }
 
 /* ── Hero Subtitle ── */

@@ -2,6 +2,114 @@ console.clear();
 
 import { WebPet } from './webpet/web-pet.js';
 
+function initHeroConsole() {
+  const consoleElement = document.querySelector('.hero-console');
+  if (!consoleElement) return;
+
+  const textTargets = Array.from(consoleElement.querySelectorAll('.hero-console__text'));
+  const cursors = Array.from(consoleElement.querySelectorAll('.hero-console__underscore'));
+  const sharpRow = consoleElement.querySelector('.hero-console__row--sharp');
+  const words = ['Cup of Jay', 'Neon Terminal.', 'Made with Love.'];
+  const colors = ['#5997fa', '#3ff0b8', '#ff9e9e'];
+  let letterCount = 1;
+  let direction = 1;
+  let waiting = false;
+  let cursorVisible = true;
+
+  const renderText = () => {
+    const text = words[0].substring(0, Math.max(0, letterCount));
+    textTargets.forEach((target) => {
+      target.textContent = text;
+    });
+  };
+
+  const setColor = (color) => {
+    consoleElement.style.setProperty('--hero-console-shadow-color', color);
+    sharpRow.style.color = color;
+  };
+
+  setColor(colors[0]);
+  renderText();
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    letterCount = words[0].length;
+    renderText();
+    return;
+  }
+
+  let typeTimer = null;
+  let cursorTimer = null;
+
+  const startTypeTimer = () => {
+    typeTimer = window.setInterval(() => {
+      if (waiting) return;
+
+      if (letterCount === 0) {
+        renderText();
+        waiting = true;
+        window.setTimeout(() => {
+          words.push(words.shift());
+          colors.push(colors.shift());
+          setColor(colors[0]);
+          direction = 1;
+          letterCount = 1;
+          waiting = false;
+          renderText();
+        }, 1000);
+      } else if (letterCount === words[0].length + 1) {
+        waiting = true;
+        window.setTimeout(() => {
+          direction = -1;
+          letterCount = words[0].length;
+          waiting = false;
+          renderText();
+        }, 1000);
+      } else {
+        renderText();
+        letterCount += direction;
+      }
+    }, 120);
+  };
+
+  const startCursorTimer = () => {
+    cursorTimer = window.setInterval(() => {
+      cursorVisible = !cursorVisible;
+      cursors.forEach((cursor) => {
+        cursor.classList.toggle('hero-console__underscore--hidden', !cursorVisible);
+      });
+    }, 400);
+  };
+
+  const startAnimation = () => {
+    if (typeTimer || cursorTimer) return;
+    startTypeTimer();
+    startCursorTimer();
+  };
+
+  const stopAnimation = () => {
+    if (typeTimer) {
+      window.clearInterval(typeTimer);
+      typeTimer = null;
+    }
+    if (cursorTimer) {
+      window.clearInterval(cursorTimer);
+      cursorTimer = null;
+    }
+  };
+
+  startAnimation();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopAnimation();
+    } else {
+      startAnimation();
+    }
+  });
+}
+
+initHeroConsole();
+
 // Simple page load animation trigger - ensures navigation plays on load
 window.addEventListener('load', () => {
   const nav = document.querySelector('.nav');
