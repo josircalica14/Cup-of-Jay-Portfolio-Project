@@ -10,7 +10,14 @@ function initHeroConsole() {
   const cursors = Array.from(consoleElement.querySelectorAll('.hero-console__underscore'));
   const sharpRow = consoleElement.querySelector('.hero-console__row--sharp');
   const words = ['Cup of Jay', 'Neon Terminal.', 'Made with Love.'];
-  const colors = ['#5997fa', '#3ff0b8', '#ff9e9e'];
+  const darkModeColors = ['#3d81ff', '#3ff0b8', '#ff9e9e'];
+  const lightModeColors = ['#000000', '#000000', '#000000'];
+  const getThemeColors = () => document.documentElement.classList.contains('light-mode')
+    ? lightModeColors
+    : darkModeColors;
+  let colors = [...getThemeColors()];
+  let colorIndex = 0;
+  const getCurrentColor = () => colors[colorIndex];
   let letterCount = 1;
   let direction = 1;
   let waiting = false;
@@ -28,8 +35,20 @@ function initHeroConsole() {
     sharpRow.style.color = color;
   };
 
-  setColor(colors[0]);
+  const applyThemePalette = () => {
+    colors = [...getThemeColors()];
+    colorIndex %= colors.length;
+    setColor(getCurrentColor());
+  };
+
+  const handleThemeChange = () => {
+    applyThemePalette();
+  };
+
+  applyThemePalette();
   renderText();
+
+  document.addEventListener('themechange', handleThemeChange);
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     letterCount = words[0].length;
@@ -49,8 +68,8 @@ function initHeroConsole() {
         waiting = true;
         window.setTimeout(() => {
           words.push(words.shift());
-          colors.push(colors.shift());
-          setColor(colors[0]);
+          colorIndex = (colorIndex + 1) % colors.length;
+          setColor(getCurrentColor());
           direction = 1;
           letterCount = 1;
           waiting = false;
@@ -257,6 +276,7 @@ themeCheckbox.addEventListener('change', () => {
   body.className = newTheme;
   document.documentElement.className = newTheme;
   localStorage.setItem('theme', newTheme);
+  document.dispatchEvent(new CustomEvent('themechange'));
 });
 
 // Carousel functionality — infinite loop, starts centered on card 1 [ 4 ][ 5 ][ 1* ][ 2 ][ 3 ]

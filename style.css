@@ -612,6 +612,19 @@ body.light-mode .hero-console {
     text-shadow: none;
 }
 
+body.light-mode .hero-console {
+    --hero-console-shadow-color: #000000;
+    color: #000000;
+}
+
+body.light-mode .hero-console__row--sharp {
+    color: #000000;
+}
+
+body.light-mode .hero-console__row--glow {
+    display: none;
+}
+
 .hero-console__row {
     display: flex;
     align-items: baseline;
