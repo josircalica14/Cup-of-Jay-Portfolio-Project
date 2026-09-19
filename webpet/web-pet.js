@@ -237,19 +237,19 @@ export class WebPet {
     this.wrapper.remove();
   }
 
-  paint() {
+  paint(scale = this.config.scale) {
     // Get the specific scale for the current animation, or default to 1.0
     const animationScale = this.config.behavior.animationScales?.[this.state.action] ?? 1.0;
-    const width = 100 * this.config.scale * animationScale;
+    const width = 100 * scale * animationScale;
 
     const boundingBox = this.boundingBoxes[this.state.action];
     if (boundingBox) {
-        const scaledCanvasWidth = boundingBox.canvasWidth * this.config.scale * animationScale;
-        const scaledCanvasHeight = boundingBox.canvasHeight * this.config.scale * animationScale;
-        const scaledBoundingBoxWidth = boundingBox.width * this.config.scale * animationScale;
-        const scaledBoundingBoxHeight = boundingBox.height * this.config.scale * animationScale;
-        const scaledBoundingBoxX = boundingBox.x * this.config.scale * animationScale;
-        const scaledBoundingBoxY = boundingBox.y * this.config.scale * animationScale;
+        const scaledCanvasWidth = boundingBox.canvasWidth * scale * animationScale;
+        const scaledCanvasHeight = boundingBox.canvasHeight * scale * animationScale;
+        const scaledBoundingBoxWidth = boundingBox.width * scale * animationScale;
+        const scaledBoundingBoxHeight = boundingBox.height * scale * animationScale;
+        const scaledBoundingBoxX = boundingBox.x * scale * animationScale;
+        const scaledBoundingBoxY = boundingBox.y * scale * animationScale;
 
         this.wrapper.style.width = `${scaledBoundingBoxWidth}px`;
         this.wrapper.style.height = `${scaledBoundingBoxHeight}px`;
@@ -286,8 +286,7 @@ export class WebPet {
     const bounds = this.container.getBoundingClientRect();
     
     // Responsive scaling
-    const baseWidth = 1440; // The width at which the pet is at its max scale
-    const responsiveScale = Math.min(1, bounds.width / baseWidth);
+    const responsiveScale = Math.min(1, Math.max(0.7, bounds.width / 1450));
     const finalScale = this.config.scale * responsiveScale;
     const size = 100 * finalScale;
 
@@ -306,7 +305,7 @@ export class WebPet {
       this.config.behavior
     );
 
-    this.paint();
+    this.paint(finalScale);
   }
 }
 
