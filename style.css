@@ -547,20 +547,33 @@ body.light-mode .hero-image {
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
 }
 
+.hero-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.5rem;
+    transform: translateX(15rem);
+}
+
 .hero-title {
     padding-top: 18rem;
-    text-align: center;
-    align-items: center;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     margin: 0 auto;
-    margin-right: 30rem;
-    width: fit-content;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
+
+body.dark-mode h1 {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+                 0 0 15px rgba(255, 255, 255, 0.5);
+}
 
 h1 {
     font-family: 'HeroFont', sans-serif;
@@ -601,12 +614,12 @@ h1 {
 
 
 @media (max-width: 1450px) {
+    .hero-text-container {
+        transform: translateX(0);
+    }
+
     .hero-title {
-        margin-right: 0;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        padding-top: 15rem;
     }
 
     h1 {
@@ -618,6 +631,10 @@ h1 {
 
 
 @media (max-width: 767px) {
+    .hero-title {
+        gap: 1.5rem;
+    }
+
     h1 { 
         font-size: 2.4rem;
         text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 0, 0, 0.5);
@@ -656,11 +673,10 @@ h1 {
 /* ── Hero Subtitle ── */
 .hero-subtitle {
     font-family: 'NavBarFont', sans-serif;
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     color: rgba(214, 214, 214, 0.6);
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 1.6rem;
     position: relative;
     display: inline-block;
     height: 1.2em; /* Adjust to fit font size */
@@ -668,6 +684,7 @@ h1 {
     opacity: 0;
     transform: translateY(0.8rem);
     animation: heroFadeIn 0.7s ease 0.5s forwards;
+    text-align: center;
 }
 
 .odometer-container {
@@ -722,7 +739,7 @@ h1 {
 }
 
 @media (max-width: 767px) {
-    .hero-subtitle { font-size: 0.8rem; letter-spacing: 1.5px; margin-top: 0.4rem; }
+    .hero-subtitle { font-size: 0.8rem; letter-spacing: 1.5px; }
 }
 
 @media (max-width: 479px) {
