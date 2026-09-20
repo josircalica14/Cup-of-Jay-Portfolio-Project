@@ -117,7 +117,10 @@ export class WebPet {
     this.wrapper.style.left = "0";
     this.wrapper.style.width = `${100 * this.config.scale}px`;
     this.wrapper.style.height = `${100 * this.config.scale}px`;
-    this.wrapper.style.zIndex = "9999";
+    // Below the nav stack (bar 9980 / backdrop 9990 / drawer 9995) so the pets
+    // blur behind the frosted navbar, drawer, and backdrop — but above all
+    // page content (max z-index 1001).
+    this.wrapper.style.zIndex = this.options.zIndex || "5000";
 
     this.sprite.style.width = "100%";
     this.sprite.style.height = "100%";

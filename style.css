@@ -556,7 +556,7 @@ body.light-mode .hero-image {
 }
 
 .hero-title {
-    padding-top: 18rem;
+    padding-top: 19rem;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -692,7 +692,7 @@ body.light-mode .hero-console__row--glow {
     }
 
     .hero-title {
-        padding-top: 15rem;
+        padding-top: 19rem;
     }
 
     h1 {
@@ -819,11 +819,12 @@ body.light-mode .hero-console__row--glow {
 /* Supporting tagline beneath the rolling word */
 .hero-subtitle__tagline {
     display: block;
-    margin-top: 2rem; /* Clear the bottom bracket, which hangs below the roll line */
+    margin-top: 3.5rem; /* Clear the bottom bracket, which hangs below the roll line */
     margin-right: -0.34em; /* Recenter — trailing letter-spacing gap */
     font-size: 0.62em;
     letter-spacing: 0.34em;
-    color: rgba(214, 214, 214, 0.45);
+    color: rgba(235, 240, 245, 0.9);
+    text-shadow: 0 0 10px rgba(235, 240, 245, 0.25);
     opacity: 0;
     transform: translateY(0.4rem);
     animation: heroFadeIn 0.8s ease 0.95s forwards;
@@ -864,7 +865,8 @@ body.light-mode .hero-subtitle__lamp:last-of-type {
 }
 
 body.light-mode .hero-subtitle__tagline {
-    color: rgba(34, 34, 34, 0.5);
+    color: rgba(20, 20, 20, 0.8);
+    text-shadow: none;
 }
 
 @keyframes roll {
@@ -1013,7 +1015,9 @@ body.light-mode h1 {
     width: 100%;
     top: var(--nav-top-spacing);
     left: 0;
-    z-index: 1000;
+    /* Above the pets (5000) so they blur behind the frosted scrolled bar,
+       below the burger (10000) and drawer/backdrop (9990/9995). */
+    z-index: 6000;
     pointer-events: auto;
     background: transparent;
     border: none;
@@ -1296,7 +1300,7 @@ body.light-mode .nav__list-item a:hover {
     .hero-title {
         margin-right: auto !important;
         margin-left: auto !important;
-        padding-top: 14rem;
+        padding-top: 17rem;
         text-align: center;
         width: 100%;
     }
@@ -1343,7 +1347,7 @@ body.light-mode .nav__list-item a:hover {
         overflow: hidden;
     }
     .hero-title {
-        padding-top: 13rem;
+        padding-top: 16rem;
     }
     .hero-image {
         margin-top: 3.5rem;
@@ -1381,7 +1385,7 @@ body.light-mode .nav__list-item a:hover {
         min-height: auto;
     }
     .hero-title {
-        padding-top: 11rem;
+        padding-top: 13rem;
     }
     h1 { 
         font-size: clamp(2.8rem, 8vw, 3.4rem);
@@ -1426,7 +1430,7 @@ body.light-mode .nav__list-item a:hover {
     .hero-title {
         margin-right: auto;
         margin-left: auto;
-        padding-top: 9rem;
+        padding-top: 11rem;
         text-align: center;
         width: 100%;
         padding-bottom: 0;
@@ -1468,7 +1472,7 @@ body.light-mode .nav__list-item a:hover {
         overflow: hidden;
     }
     .hero-title {
-        padding-top: 7rem;
+        padding-top: 9rem;
         text-align: center;
     }
     h1 {

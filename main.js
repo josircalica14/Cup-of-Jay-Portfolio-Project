@@ -66,10 +66,12 @@ function initHeroConsole() {
       if (letterCount === 0) {
         renderText();
         waiting = true;
+        // Crossfade to the next color now, while only the blinking cursor is
+        // visible — the new word then types in already at its final color.
+        colorIndex = (colorIndex + 1) % colors.length;
+        setColor(getCurrentColor());
         window.setTimeout(() => {
           words.push(words.shift());
-          colorIndex = (colorIndex + 1) % colors.length;
-          setColor(getCurrentColor());
           direction = 1;
           letterCount = 1;
           waiting = false;

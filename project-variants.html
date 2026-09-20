@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Featured Projects — Adaptive Showcase Options</title>
+<style>
+  :root { --bg: #141518; --panel: #1d1f23; --ink: #e8e8e8; --dim: #9aa0a8; --cyan: #22cdda; --blue: #4da3ff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .opt { padding: 4rem 2rem 5rem; border-bottom: 1px solid #26282d; }
+  .opt h1 { font-size: 1.1rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.4rem; }
+  .opt p.desc { color: var(--dim); font-size: 0.9rem; margin-bottom: 2rem; max-width: 64ch; }
+  .card { background: var(--panel); border-radius: 1.25rem; overflow: hidden; border: 1px solid #2a2d33; }
+  .card__cover { width: 100%; object-fit: cover; display: block; }
+  .card__body { padding: 1.2rem 1.4rem 1.5rem; }
+  .chip-title { display: inline-block; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.04em;
+    background: linear-gradient(90deg, var(--cyan), var(--blue)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .card__body p { color: var(--dim); font-size: 0.88rem; margin: 0.5rem 0 1rem; }
+  .button { display: inline-block; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+    color: var(--cyan); border: 1px solid var(--cyan); border-radius: 2rem; padding: 0.5rem 1.2rem; transition: all .3s; }
+  .button:hover { background: var(--cyan); color: #10262a; }
+  .ghost { outline: 2px dashed rgba(34,205,218,0.35); outline-offset: 3px; }
+  .ghost .card__body p::after { content: " — auto-joins when added"; color: rgba(34,205,218,0.7); font-style: italic; }
+
+  /* ── A. Hero spotlight + thumbnail queue ── */
+  .spot { max-width: 900px; margin: 0 auto; }
+  .spot__stage { position: relative; border-radius: 1.25rem; overflow: hidden; border: 1px solid #2a2d33; aspect-ratio: 21/9; }
+  .spot__stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s ease, transform 6s linear; }
+  .spot__stage img.on { opacity: 1; transform: scale(1); }
+  .spot__scrim { position: absolute; inset: 0; background: linear-gradient(transparent 35%, rgba(10,11,13,0.92) 78%); }
+  .spot__meta { position: absolute; left: 2rem; bottom: 1.6rem; }
+  .spot__dots { display: flex; gap: 0.5rem; margin-top: 1.4rem; }
+  .spot__dots button { width: 2.6rem; height: 0.3rem; border: 0; border-radius: 1rem; background: #33363c; cursor: pointer; overflow: hidden; position: relative; }
+  .spot__dots button .fill { position: absolute; inset: 0; width: 0; background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+  .spot__dots button.on .fill { animation: fill 6s linear forwards; }
+  @keyframes fill { to { width: 100%; } }
+  .spot__thumbs { display: flex; gap: 1rem; margin-top: 1.4rem; }
+  .spot__thumbs img { width: 7.5rem; aspect-ratio: 3/2; object-fit: cover; border-radius: 0.7rem; opacity: 0.45;
+    border: 1px solid #2a2d33; cursor: pointer; transition: opacity .3s, transform .3s; }
+  .spot__thumbs img.on { opacity: 1; transform: translateY(-4px); border-color: var(--cyan); }
+
+  /* ── B. Fan stack ── */
+  .fan { position: relative; max-width: 560px; height: 460px; margin: 0 auto; }
+  .fan .card { position: absolute; inset: 0; margin: auto; height: fit-content; transition: transform .8s cubic-bezier(.2,.8,.2,1), opacity .8s, filter .8s; }
+  .fan .card:nth-child(2) .card__cover, .fan .card:nth-child(3) .card__cover { height: 240px; }
+  .fan .p0 { transform: translate(0,0) scale(1); z-index: 3; }
+  .fan .p1 { transform: translate(6%, -4.5%) scale(.92) rotate(3deg); z-index: 2; opacity: .6; filter: brightness(.55) saturate(.8); }
+  .fan .p2 { transform: translate(-6%, -8%) scale(.85) rotate(-3.5deg); z-index: 1; opacity: .35; filter: brightness(.4) saturate(.6); }
+  .fan__count { text-align: center; color: var(--dim); font-size: .8rem; letter-spacing: .2em; margin-top: 1rem; text-transform: uppercase; }
+
+  /* ── C. Snap rail ── */
+  .rail { display: flex; gap: 1.4rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0.5rem max(2rem, calc(50vw - 340px));
+    margin: -0.5rem -2rem; scrollbar-width: none; }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail .card { flex: 0 0 min(340px, 78vw); scroll-snap-align: center; transition: transform .4s, opacity .4s, box-shadow .4s; opacity: .55; }
+  .rail .card.snap { opacity: 1; transform: translateY(-6px) scale(1.02); box-shadow: 0 18px 50px rgba(0,0,0,0.45), 0 0 30px rgba(34,205,218,0.12); }
+  .rail .card .card__cover { height: 220px; }
+
+  /* ── D. Growing grid ── */
+  .grid { display: grid; gap: 1.4rem; max-width: 940px; margin: 0 auto; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid .card { transition: transform .35s, box-shadow .35s; }
+  .grid .card:hover { transform: translateY(-8px); box-shadow: 0 20px 45px rgba(0,0,0,0.5), 0 0 26px rgba(34,205,218,0.1); }
+  .grid .card .card__cover { height: 200px; }
+  .grid .card:first-child { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr 1fr; }
+  .grid .card:first-child .card__cover { height: 100%; min-height: 260px; }
+  .grid .card:first-child .card__body { align-self: center; }
+  .grid .card.ghost:first-child { grid-column: auto; display: block; }
+  @media (max-width: 700px) { .grid .card:first-child { grid-template-columns: 1fr; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spot__stage img, .spot__dots button .fill { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<section class="opt">
+  <h1>A — Hero Spotlight + Thumbnail Queue</h1>
+  <p class="desc">One project on stage at a time with a slow cinematic zoom; every other project waits as a clickable thumbnail below, each with a progress-bar timer. Works with 2 projects today and any number tomorrow — new projects simply appear as another thumbnail.</p>
+  <div class="spot">
+    <div class="spot__stage" id="stage">
+      <div class="spot__scrim"></div>
+      <div class="spot__meta"><span class="chip-title" id="spotTitle"></span></div>
+    </div>
+    <div class="spot__dots" id="spotDots"></div>
+    <div class="spot__thumbs" id="spotThumbs"></div>
+  </div>
+</section>
+
+<section class="opt">
+  <h1>B — Fan Stack</h1>
+  <p class="desc">The active project sits front and center; the rest fan out behind it in tilted, dimmed layers. Auto-advances. Two projects look intentional, and each new project just adds another card to the fan (cycling back through).</p>
+  <div class="fan" id="fan">
+    <div class="card"><img class="card__cover" src="https://picsum.photos/600/800?random=1" style="height:300px" alt=""><div class="card__body"><span class="chip-title">ScanPasada</span><p>Jeepney Terminal Queueing System.</p><a class="button" href="#">View Project</a></div></div>
+    <div class="card"><img class="card__cover" src="https://picsum.photos/600/800?random=2" alt=""><div class="card__body"><span class="chip-title">RetroWalk</span><p>Inside Out Memory Orb Themed Virtual Interactive Museum</p><a class="button" href="#">View Project</a></div></div>
+    <div class="card ghost"><img class="card__cover" src="https://picsum.photos/600/800?random=3" alt=""><div class="card__body"><span class="chip-title">Third Project</span><p>Fan slot for a future project</p><a class="button" href="#">View Project</a></div></div>
+  </div>
+  <div class="fan__count" id="fanCount"></div>
+</section>
+
+<section class="opt">
+  <h1>C — Snap Rail</h1>
+  <p class="desc">A native horizontal scroll with snap points — drag/swipe between projects; the centered card lifts and glows. Scales perfectly from 2 cards to 20, plus it is the most accessible option (real scrolling, keyboard arrows). Dashed card = a future project slot.</p>
+  <div class="rail" id="rail">
+    <div class="card"><img class="card__cover" src="https://picsum.photos/600/800?random=1" alt=""><div class="card__body"><span class="chip-title">ScanPasada</span><p>Jeepney Terminal Queueing System.</p><a class="button" href="#">View Project</a></div></div>
+    <div class="card"><img class="card__cover" src="https://picsum.photos/600/800?random=2" alt=""><div class="card__body"><span class="chip-title">RetroWalk</span><p>Inside Out Memory Orb Themed Virtual Interactive Museum</p><a class="button" href="#">View Project</a></div></div>
+    <div class="card ghost"><img class="card__cover" src="https://picsum.photos/600/800?random=3" alt=""><div class="card__body"><span class="chip-title">Third Project</span><p>Future slot — rail grows to fit</p><a class="button" href="#">View Project</a></div></div>
+  </div>
+</section>
+
+<section class="opt">
+  <h1>D — Growing Grid</h1>
+  <p class="desc">The newest project gets a wide feature row (image beside text); the rest flow into a responsive grid below. `auto-fit` columns mean 2, 3, or 6 projects all compose cleanly with zero extra code. Hover-lift keeps it feeling alive.</p>
+  <div class="grid">
+    <div class="card">
+      <img class="card__cover" src="https://picsum.photos/600/800?random=1" alt="">
+      <div class="card__body"><span class="chip-title">ScanPasada</span><p>Jeepney Terminal Queueing System.</p><a class="button" href="#">View Project</a></div>
+    </div>
+    <div class="card">
+      <img class="card__cover" src="https://picsum.photos/600/800?random=2" alt="">
+      <div class="card__body"><span class="chip-title">RetroWalk</span><p>Inside Out Memory Orb Museum</p><a class="button" href="#">View Project</a></div>
+    </div>
+    <div class="card ghost">
+      <img class="card__cover" src="https://picsum.photos/600/800?random=3" alt="">
+      <div class="card__body"><span class="chip-title">Third Project</span><p>Grid reflows automatically</p><a class="button" href="#">View Project</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // A — spotlight
+  const data = [
+    { n: 1, t: 'ScanPasada', p: 'Jeepney Terminal Queueing System.' },
+    { n: 2, t: 'RetroWalk', p: 'Inside Out Memory Orb Themed Virtual Interactive Museum' }
+  ];
+  const stage = document.getElementById('stage'), dots = document.getElementById('spotDots'), thumbs = document.getElementById('spotThumbs');
+  let si = 0, spotTimer;
+  data.forEach((d, i) => {
+    const img = document.createElement('img');
+    img.src = `https://picsum.photos/600/800?random=${d.n}`; img.alt = '';
+    stage.insertBefore(img, stage.firstChild);
+    img.addEventListener('click', () => show(i, true));
+    const dot = document.createElement('button');
+    dot.innerHTML = '<span class="fill"></span>';
+    dot.addEventListener('click', () => show(i, true));
+    dots.appendChild(dot);
+    const th = document.createElement('img');
+    th.src = `https://picsum.photos/600/800?random=${d.n}`; th.alt = d.t;
+    th.addEventListener('click', () => show(i, true));
+    thumbs.appendChild(th);
+  });
+  const imgs = [...stage.querySelectorAll('img')], dotEls = [...dots.children], thEls = [...thumbs.children];
+  function show(i, manual) {
+    si = i;
+    imgs.forEach((im, k) => im.classList.toggle('on', k === i));
+    dotEls.forEach((d, k) => { d.classList.remove('on'); if (k === i) { void d.offsetWidth; d.classList.add('on'); } });
+    thEls.forEach((t, k) => t.classList.toggle('on', k === i));
+    document.getElementById('spotTitle').textContent = data[i].t;
+    if (manual) { clearInterval(spotTimer); spotTimer = setInterval(next, 6000); }
+  }
+  const next = () => show((si + 1) % data.length);
+  show(0); spotTimer = setInterval(next, 6000);
+
+  // B — fan rotation
+  const fan = document.getElementById('fan');
+  const fanCards = [...fan.children];
+  let fi = 0;
+  fanCards.forEach((c, i) => c.classList.add('p' + i));
+  setInterval(() => {
+    fi = (fi + 1) % fanCards.length;
+    fanCards.forEach((c, i) => { c.className = 'card p' + ((i - fi + fanCards.length) % fanCards.length); });
+    document.getElementById('fanCount').textContent = `Showing ${fi + 1} of ${fanCards.length} — the fan absorbs new projects automatically`;
+  }, 3200);
+  document.getElementById('fanCount').textContent = 'Showing 1 of 3 slots — the fan absorbs new projects automatically';
+
+  // C — snap highlight
+  const rail = document.getElementById('rail');
+  const railCards = [...rail.children];
+  const markSnap = () => {
+    const mid = rail.getBoundingClientRect().left + rail.clientWidth / 2;
+    let best = 0, bd = Infinity;
+    railCards.forEach((c, i) => {
+      const r = c.getBoundingClientRect();
+      const d = Math.abs(r.left + r.width / 2 - mid);
+      c.classList.toggle('snap', d < r.width / 2);
+      if (d < bd) { bd = d; best = i; }
+    });
+  };
+  rail.addEventListener('scroll', markSnap, { passive: true });
+  markSnap();
+</script>
+</body>
+</html>
