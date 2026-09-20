@@ -281,178 +281,163 @@ themeCheckbox.addEventListener('change', () => {
   document.dispatchEvent(new CustomEvent('themechange'));
 });
 
-// Carousel functionality — infinite loop, starts centered on card 1 [ 4 ][ 5 ][ 1* ][ 2 ][ 3 ]
+// Hero Spotlight — one project on stage, the rest queued as thumbnails.
+// Adapts automatically to any number of projects: add another hidden
+// .spotlight-slide template and it becomes a stage slide + thumbnail + dot.
 document.addEventListener('DOMContentLoaded', () => {
-  const track = document.querySelector('.carousel__track');
-  if (!track) return; // Exit if carousel is not on this page
+  const spotlight = document.querySelector('.spotlight');
+  if (!spotlight) return; // Exit if spotlight is not on this page
 
-  const originalSlides = Array.from(document.querySelectorAll('.carousel__slide'));
-  const prevButton = document.querySelector('.carousel__button--prev');
-  const nextButton = document.querySelector('.carousel__button--next');
-  const indicatorsContainer = document.querySelector('.carousel__indicators');
+  const stage = spotlight.querySelector('.spotlight__stage');
+  const meta = spotlight.querySelector('.spotlight__meta');
+  const titleEl = spotlight.querySelector('.spotlight__title');
+  const captionEl = spotlight.querySelector('.spotlight__caption');
+  const ctaEl = spotlight.querySelector('.spotlight__cta');
+  const dotsContainer = spotlight.querySelector('.spotlight__dots');
+  const thumbsContainer = spotlight.querySelector('.spotlight__thumbs');
 
-  const count = originalSlides.length;
-  let slidesPerView = getSlidesPerView();
-  // trackIndex points into the tripled track; real slides are at [count .. count*2-1]
-  let trackIndex = count; // start on real slide 0 (card 1)
-  let isTransitioning = false;
+  // Projects are declared as hidden templates in the HTML — one per project.
+  // Note: <template> content lives in a DocumentFragment, so query .content
+  const projects = Array.from(document.querySelectorAll('template.spotlight-slide')).map(slide => ({
+    title: slide.dataset.title,
+    caption: slide.dataset.caption,
+    href: slide.content.querySelector('a').getAttribute('href'),
+    img: slide.content.querySelector('img').getAttribute('src'),
+    alt: slide.content.querySelector('img').getAttribute('alt')
+  }));
+  if (!projects.length) return;
 
-  function getSlidesPerView() {
-    if (window.innerWidth >= 1024) return 3;
-    if (window.innerWidth >= 768) return 2;
-    return 1;
-  }
+  const INTERVAL = 6000;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
 
-  function setupTrack() {
-    track.innerHTML = '';
-    if (isStaticView()) {
-      // Just show originals, no cloning
-      originalSlides.forEach(s => track.appendChild(s.cloneNode(true)));
-    } else {
-      // [clones of all] + [originals] + [clones of all]
-      [...originalSlides, ...originalSlides, ...originalSlides].forEach(s => {
-        track.appendChild(s.cloneNode(true));
-      });
-    }
-  }
-
-  function getPos(index) {
-    const slideWidth = 100 / slidesPerView;
-    const centerOffset = (slidesPerView - 1) / 2;
-    return (index - centerOffset) * slideWidth;
-  }
-
-  function setTrackPos(animate) {
-    if (isStaticView()) {
-      track.style.transition = 'none';
-      track.style.transform = 'none';
-      return;
-    }
-    track.style.transition = animate ? 'transform 0.5s ease-in-out' : 'none';
-    track.style.transform = `translateX(-${getPos(trackIndex)}%)`;
-  }
-
-  function realIndex() {
-    return ((trackIndex - count) % count + count) % count;
-  }
-
-  function updateFocus() {
-    const allSlides = Array.from(track.querySelectorAll('.carousel__slide'));
-    allSlides.forEach((slide, i) => {
-      slide.classList.toggle('is-active', i === trackIndex);
-    });
-  }
-
-  function updateIndicators() {
-    const ri = realIndex();
-    Array.from(indicatorsContainer.querySelectorAll('.carousel__indicator'))
-      .forEach((btn, i) => btn.classList.toggle('active', i === ri));
-    updateFocus();
-  }
-
-  function isStaticView() {
-    return count <= slidesPerView || count <= 2;
-  }
-
-  function updateStaticState() {
-    const isStatic = isStaticView();
-    prevButton.style.display = isStatic ? 'none' : '';
-    nextButton.style.display = isStatic ? 'none' : '';
-    indicatorsContainer.style.display = isStatic ? 'none' : '';
-    track.classList.toggle('carousel__track--static', isStatic);
-    if (isStatic) {
-      clearInterval(autoplayTimer);
-    }
-  }
-
-  function goNext() {
-    if (isTransitioning || isStaticView()) return;
-    isTransitioning = true;
-    trackIndex++;
-    setTrackPos(true);
-    updateIndicators();
-  }
-
-  function goPrev() {
-    if (isTransitioning || isStaticView()) return;
-    isTransitioning = true;
-    trackIndex--;
-    setTrackPos(true);
-    updateIndicators();
-  }
-
-  // After each transition, silently jump back into the middle set if we've drifted
-  track.addEventListener('transitionend', () => {
-    isTransitioning = false;
-    if (trackIndex >= count * 2) {
-      trackIndex -= count;
-      setTrackPos(false);
-    } else if (trackIndex < count) {
-      trackIndex += count;
-      setTrackPos(false);
-    }
-    updateFocus();
+  // Build stage slides, progress dots, and thumbnails from the templates
+  const imgs = projects.map((p, i) => {
+    const img = document.createElement('img');
+    img.src = p.img;
+    img.alt = p.alt;
+    img.loading = i === 0 ? 'eager' : 'lazy';
+    stage.insertBefore(img, stage.firstChild);
+    return img;
   });
 
-  function goToReal(ri) {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    // Navigate to the real slide in the middle set
-    trackIndex = count + ri;
-    setTrackPos(true);
-    updateIndicators();
-    setTimeout(() => { isTransitioning = false; }, 520);
-  }
+  const dots = projects.map((p, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'spotlight__dot';
+    dot.setAttribute('aria-label', `Show project ${i + 1}: ${p.title}`);
+    const fill = document.createElement('span');
+    fill.className = 'fill';
+    dot.appendChild(fill);
+    dot.addEventListener('click', () => { show(i); restartAutoplay(); });
+    dotsContainer.appendChild(dot);
+    return dot;
+  });
 
-  function createIndicators() {
-    indicatorsContainer.innerHTML = '';
-    originalSlides.forEach((_, i) => {
-      const btn = document.createElement('button');
-      btn.classList.add('carousel__indicator');
-      if (i === realIndex()) btn.classList.add('active');
-      btn.addEventListener('click', () => { goToReal(i); resetAutoplay(); });
-      indicatorsContainer.appendChild(btn);
+  const thumbs = projects.map((p, i) => {
+    const thumb = document.createElement('img');
+    thumb.src = p.img;
+    thumb.alt = `Show ${p.title}`;
+    thumb.loading = 'lazy';
+    thumb.className = 'spotlight__thumb';
+    thumb.addEventListener('click', () => { show(i); restartAutoplay(); });
+    thumbsContainer.appendChild(thumb);
+    return thumb;
+  });
+
+  function show(i) {
+    current = ((i % projects.length) + projects.length) % projects.length;
+    const p = projects[current];
+
+    imgs.forEach((img, k) => img.classList.toggle('is-on', k === current));
+    thumbs.forEach((t, k) => t.classList.toggle('on', k === current));
+
+    titleEl.textContent = p.title;
+    captionEl.textContent = p.caption;
+    ctaEl.href = p.href;
+    ctaEl.setAttribute('aria-label', `View project: ${p.title}`);
+
+    // Retrigger the staggered text entrance
+    meta.classList.remove('swap');
+    void meta.offsetWidth;
+    meta.classList.add('swap');
+
+    // Restart the progress fill on the active dot only
+    dots.forEach((d, k) => {
+      d.classList.remove('on');
+      if (k === current) {
+        void d.offsetWidth;
+        d.classList.add('on');
+      }
     });
   }
 
-  prevButton.addEventListener('click', () => { goPrev(); resetAutoplay(); });
-  nextButton.addEventListener('click', () => { goNext(); resetAutoplay(); });
-  prevButton.disabled = false;
-  nextButton.disabled = false;
-
-  // Autoplay — advances every 3s, resets on manual interaction
-  let autoplayTimer;
-
+  // Autoplay is driven by the pill fill's animationend (below).
+  // startAutoplay = let the fill run; stopAutoplay = freeze it via CSS class.
   function startAutoplay() {
-    if (isStaticView()) return;
-    autoplayTimer = setInterval(goNext, 3000);
+    if (reducedMotion) return;
+    spotlight.classList.remove('spotlight--paused');
   }
 
-  function resetAutoplay() {
-    clearInterval(autoplayTimer);
+  function stopAutoplay() {
+    spotlight.classList.add('spotlight--paused');
+  }
+
+  function restartAutoplay() {
+    stopAutoplay();
     startAutoplay();
   }
 
-  // Pause on hover
-  track.addEventListener('mouseenter', () => clearInterval(autoplayTimer));
-  track.addEventListener('mouseleave', startAutoplay);
+  // Hover pause: freeze the fill animation via CSS so pill and clock can't drift
+  stage.addEventListener('mouseenter', stopAutoplay);
+  stage.addEventListener('mouseleave', startAutoplay);
 
-  window.addEventListener('resize', () => {
-    const ri = realIndex();
-    slidesPerView = getSlidesPerView();
-    setupTrack();
-    trackIndex = count + ri;
-    setTrackPos(false);
-    updateStaticState();
+  // The active pill's fill IS the clock: when it finishes filling, advance.
+  // Hovering the card pauses the animation (CSS) so pill and timer can never drift apart.
+  dotsContainer.addEventListener('animationend', (e) => {
+    if (e.animationName === 'dotFill') show(current + 1);
   });
 
-  slidesPerView = getSlidesPerView();
-  setupTrack();
-  createIndicators();
-  setTrackPos(false);
-  updateFocus();
-  updateStaticState();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) spotlight.classList.add('spotlight--paused');
+    else spotlight.classList.remove('spotlight--paused');
+  });
+
+  // Card hover: 3D tilt toward the cursor (pointer devices only, not touch, not reduced-motion).
+  // A rAF easing loop interpolates current -> target angles, so cursor tracking AND
+  // the return-to-flat on leave are both buttery instead of snapping.
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (finePointer && !reducedMotion) {
+    let targetX = 0, targetY = 0, curX = 0, curY = 0, rafId = null;
+
+    const tick = () => {
+      // Ease ~9% toward target each frame — smooth in, graceful settle out
+      curX += (targetX - curX) * 0.09;
+      curY += (targetY - curY) * 0.09;
+      stage.style.transform = `perspective(1000px) rotateY(${curX.toFixed(3)}deg) rotateX(${curY.toFixed(3)}deg) translateY(-8px)`;
+      if (Math.abs(targetX - curX) > 0.005 || Math.abs(targetY - curY) > 0.005) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = null;
+        // Fully settled back to rest — remove the inline transform entirely
+        if (targetX === 0 && targetY === 0) stage.style.transform = '';
+      }
+    };
+
+    const wake = () => { if (!rafId) rafId = requestAnimationFrame(tick); };
+
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      targetX = ((e.clientX - r.left) / r.width - 0.5) * 8;
+      targetY = -((e.clientY - r.top) / r.height - 0.5) * 6;
+      wake();
+    });
+    stage.addEventListener('mouseleave', () => {
+      targetX = 0;
+      targetY = 0;
+      wake();
+    });
+  }
+
+  show(0);
   startAutoplay();
-
-
 });

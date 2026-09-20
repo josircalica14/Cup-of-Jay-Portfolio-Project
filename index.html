@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Cup of Jay - Creative Developer & Designer portfolio">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
     <link rel="stylesheet" href="about.css">
     <link rel="stylesheet" href="theme-toggle.css">
     <title>Cup of Jay | Creative Developer & Designer</title>
@@ -162,64 +162,54 @@
     <section class="features-projects">
         <div class="features-projects__container">
             <h2 class="features-projects__title">Featured Projects</h2>
-            <div class="carousel">
-                <div class="carousel__track">
-                    <div class="carousel__slide">
-                        <div class="card">
-                            <div class="card__inner">
-                                <img class="card__cover" src="https://picsum.photos/600/800?random=1" alt="E-Commerce Platform">
-                                <div class="card__body">
-                                    <h2 class="card__header">
-                                        <span class="chips chip-title">ScanPasada </span>
-                                    </h2>
-                                    <p>Jeepney Terminal Queueing System.</p>
-                                    <a href="scanpasada.html" class="button">View Project
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel__slide">
-                        <div class="card">
-                            <div class="card__inner">
-                                <img class="card__cover" src="https://picsum.photos/600/800?random=2" alt="Mobile Banking App">
-                                <div class="card__body">
-                                    <h2 class="card__header">
-                                        <span class="chips chip-title">RetroWalk</span>
-                                    </h2>
-                                    <p>Inside Out Memory Orb Themed Virtual Interactive Museum </p>
-                                    <a href="nyerk.html" class="button">View Project
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+            <div class="spotlight">
+                <div class="spotlight__stage">
+                    <div class="spotlight__scrim"></div>
+                    <div class="spotlight__meta">
+                        <span class="spotlight__eyebrow">Featured Project</span>
+                        <h3 class="spotlight__title"></h3>
+                        <p class="spotlight__caption"></p>
+                        <a class="spotlight__cta" href="#">View Project →</a>
                     </div>
                 </div>
-                <button class="carousel__button carousel__button--prev" aria-label="Previous slide">←</button>
-                <button class="carousel__button carousel__button--next" aria-label="Next slide">→</button>
-                <div class="carousel__indicators"></div>
+                <div class="spotlight__controls">
+                    <div class="spotlight__dots" role="tablist" aria-label="Featured projects"></div>
+                    <div class="spotlight__thumbs"></div>
+                </div>
+
+                <!-- Project data — add a new template here and the spotlight picks it up automatically -->
+                <template class="spotlight-slide" data-title="ScanPasada" data-caption="Jeepney Terminal Queueing System — a queueing platform that streamlines how commuters claim their slot at busy terminals.">
+                    <img src="https://picsum.photos/600/800?random=1" alt="E-Commerce Platform">
+                    <a href="scanpasada.html">View Project</a>
+                </template>
+                <template class="spotlight-slide" data-title="RetroWalk" data-caption="Inside Out Memory Orb Themed Virtual Interactive Museum — an interactive walk through memory itself.">
+                    <img src="https://picsum.photos/600/800?random=2" alt="Mobile Banking App">
+                    <a href="nyerk.html">View Project</a>
+                </template>
             </div>
         </div>
     </section>
 
     <hr class="section-separator">
 
-    <!-- About Section -->
+    <!-- About Section — A2: photo column + neon seam + corner brackets -->
     <section class="about-section">
         <div class="about-section__container">
             <div class="about-section__image-container">
-                <img src="./assets/profile_photo/af143130-1011-4f02-85a0-5e2219a06987.jpg" alt="About Me" class="about-section__image">
+                <div class="about-section__frame">
+                    <img src="./assets/profile_photo/af143130-1011-4f02-85a0-5e2219a06987.jpg" alt="About Me" class="about-section__image">
+                </div>
             </div>
             <div class="about-section__content">
-                <h2 class="about-section__title">About Me</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.</p>
-                <a href="#" class="button">Read More</a>
+                <div class="about-section__eyebrow">About Me</div>
+                <h2 class="about-section__title">Designer &amp; Developer</h2>
+                <p class="about-section__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.</p>
+                <a href="#" class="about-section__link">Read More</a>
             </div>
         </div>
     </section>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js?v=3"></script>
     <script src="lib/libgif.js"></script>
     <script src="lib/web-pet-engine.js"></script>
 </body>

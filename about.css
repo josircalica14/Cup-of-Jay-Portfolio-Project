@@ -1,138 +1,297 @@
-/* About Section */
+/* ═══ About Section — A2: 230px photo column · neon gradient seam · corner brackets ═══ */
 .about-section {
-    padding: 6rem 2rem; /* Increased padding */
+    padding: 7rem 2rem;
     background-color: var(--background-color);
     position: relative;
     overflow: hidden;
-}
-
-.about-section__container {
+}.about-section__container {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    max-width: 1100px; /* Slightly reduced max-width */
-    margin: 0 auto;
+    grid-template-columns: 230px auto;
     align-items: center;
+    /* Hug the content so the lockup is truly centered,
+       but never exceed 78% of the viewport (1600px ceiling) */
+    width: fit-content;
+    max-width: min(78%, 1600px);
+    margin-inline: auto;
 }
 
-@media (min-width: 1451px) {
-    .about-section__container {
-        grid-template-columns: 30% 70%; /* 30/70 layout */
-        gap: 5rem; /* Increased gap */
-    }
-
-    .about-section__image-container {
-        order: 1;
-    }
-
-    .about-section__content {
-        order: 2;
-    }
-}
-
-/* On screens 1450px and below, use a stacked layout and center the title and button */
-@media (max-width: 1450px) {
-    .about-section__container {
-        /* This ensures the image is centered in its grid area */
-        text-align: center;
-    }
-
-    .about-section__content {
-        /* Use flexbox to easily center the button */
-        display: flex;
-        flex-direction: column;
-    }
-
-    .about-section__title {
-        /* Explicitly center the title */
-        text-align: center;
-    }
-
-    .about-section__content .button {
-        /* Center the button within the flex container */
-        align-self: center;
-    }
-
-    .about-section__subtitle,
-    .about-section p {
-        /* Keep paragraph text left-aligned for readability */
-        text-align: left;
-    }
-}
-
+/* ── Photo column ── */
 .about-section__image-container {
-    order: 1;
-    position: relative;
     display: flex;
-    justify-content: center; /* Center the image */
+    justify-content: center;
 }
 
-@media (min-width: 768px) {
-    .about-section__image-container {
-        order: 1;
-    }
+/* Bracket frame: TL/BR corner marks echoing the hero subtitle */
+.about-section__frame {
+    position: relative;
+}
+
+.about-section__frame::before,
+.about-section__frame::after {
+    content: '';
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease;
+}
+
+.about-section__frame::before {
+    top: -12px;
+    left: -12px;
+    border-top: 3px solid var(--brand-primary);
+    border-left: 3px solid var(--brand-primary);
+    box-shadow: -5px -5px 0 -3px rgba(34, 205, 218, 0.35);
+}
+
+.about-section__frame::after {
+    bottom: -12px;
+    right: -12px;
+    border-bottom: 3px solid var(--brand-primary);
+    border-right: 3px solid var(--brand-primary);
+    box-shadow: 5px 5px 0 -3px rgba(34, 205, 218, 0.35);
+}
+
+/* Brackets breathe outward on hover */
+.about-section__frame:hover::before {
+    transform: translate(-5px, -5px);
+}
+
+.about-section__frame:hover::after {
+    transform: translate(5px, 5px);
 }
 
 .about-section__image {
+    display: block;
     width: 100%;
-    max-width: 280px; /* Max width for desktop */
-    height: auto;
-    aspect-ratio: 1 / 1;
+    max-width: 230px;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: 50%; /* Circular shape */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 3px solid var(--brand-primary); /* Slightly thicker border */
+    border-radius: 12px;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.45);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
 }
 
-.about-section__image:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+.about-section__image-container:hover .about-section__image {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.55);
 }
 
+/* ── Text column ── */
 .about-section__content {
-    order: 2;
-    text-align: left;
+    position: relative;
+    padding: 3rem 0 3rem 4.5rem;
+}
+
+/* Neon gradient seam with glow */
+.about-section__content::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--brand-primary) 30%, var(--brand-primary-dark) 70%, transparent);
+    box-shadow: 0 0 12px rgba(34, 205, 218, 0.5);
+}
+
+.about-section__eyebrow {
+    font-family: 'NavBarFont', sans-serif;
+    font-size: 0.82rem;
+    font-weight: bold;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+    text-shadow: 0 0 14px rgba(34, 205, 218, 0.55);
+    margin-bottom: 1.2rem;
 }
 
 .about-section__title {
-    font-family: 'HeroFont', sans-serif;
-    font-size: 3rem;
-
-/* Active nav link style */
-.nav__list-item--active a {
-    color: var(--brand-primary); /* Or any color that indicates 'active' */
-    font-weight: bold; /* Example: make it bold */
-}
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-}
-
-.about-section__subtitle {
     font-family: 'NavBarFont', sans-serif;
-    font-size: 1.2rem;
-    color: var(--brand-primary);
-    margin-bottom: 2rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.about-section p {
-    font-family: 'CardBodyFont', sans-serif;
-    font-size: 1.1rem;
-    line-height: 1.8; /* Increased line-height */
-    margin-bottom: 2.5rem;
+    font-weight: normal;
+    font-size: clamp(2.3rem, 4.2vw, 3.4rem);
+    line-height: 1.12;
+    margin-bottom: 1.5rem;
     color: var(--text-color);
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 1024px) {
+.about-section__text {
+    font-family: 'CardBodyFont', sans-serif;
+    font-size: 1.02rem;
+    line-height: 2;
+    color: var(--text-color);
+    opacity: 0.75;
+    max-width: 70ch;
+    margin-bottom: 2.2rem;
+}
+
+/* Quiet text link — arrow slides, turns cyan on hover */
+.about-section__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-family: 'NavBarFont', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.about-section__link::after {
+    content: '→';
+    transition: transform 0.3s ease;
+}
+
+.about-section__link:hover {
+    color: var(--brand-primary);
+}
+
+.about-section__link:hover::after {
+    transform: translateX(3px);
+}
+
+/* ═══ Responsive ═══ */
+
+/* Large desktop: photo grows, composition fills the width */
+@media (min-width: 1600px) {
+    .about-section__container {
+        grid-template-columns: 280px auto;
+    }
+
     .about-section__image {
-        max-width: 240px;
+        max-width: 280px;
+    }
+
+    .about-section__content {
+        padding-left: 5.5rem;
+    }
+
+    .about-section__title {
+        font-size: 3.2rem;
     }
 }
 
-@media (max-width: 767px) {
+/* ≤1024px: tighten the seam gap */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .about-section__content {
+        padding-left: 3rem;
+    }
+}
+
+/* ≤768px: stack — photo centered on top, seam hidden, text centered */
+@media (max-width: 768px) {
+    .about-section {
+        padding: 5rem 1.5rem;
+    }
+
+    .about-section__container {
+        grid-template-columns: 1fr;
+        width: 100%;
+        gap: 2.5rem;
+    }
+
     .about-section__image {
         max-width: 200px;
+    }
+
+    .about-section__frame {
+        margin: 12px; /* room for the overhanging brackets */
+    }
+
+    .about-section__content {
+        padding: 0;
+        text-align: center;
+    }
+
+    .about-section__content::before {
+        display: none; /* seam is meaningless in a stack */
+    }
+
+    .about-section__text {
+        margin-inline: auto;
+    }
+}
+
+/* ≤480px: scale photo and brackets down */
+@media (max-width: 480px) {
+    .about-section {
+        padding: 4rem 1.25rem;
+    }
+
+    .about-section__image {
+        max-width: 170px;
+        border-radius: 10px;
+    }
+
+    .about-section__frame::before,
+    .about-section__frame::after {
+        width: 26px;
+        height: 26px;
+    }
+
+    .about-section__frame::before {
+        top: -9px;
+        left: -9px;
+    }
+
+    .about-section__frame::after {
+        bottom: -9px;
+        right: -9px;
+    }
+
+    .about-section__title {
+        font-size: 1.9rem;
+    }
+
+    .about-section__content {
+        padding: 0;
+    }
+}
+
+/* ═══ Light mode ═══ */
+body.light-mode .about-section__title {
+    text-shadow: none; /* crisp ink on cream */
+}
+
+body.light-mode .about-section__eyebrow {
+    color: var(--brand-primary-dark);
+    text-shadow: 0 0 10px rgba(0, 79, 210, 0.3);
+}
+
+/* Match dark mode's double-line brackets exactly — just in brand blue */
+body.light-mode .about-section__frame::before {
+    border-color: var(--brand-primary-dark);
+    box-shadow: -5px -5px 0 -3px rgba(0, 79, 210, 0.35);
+}
+
+body.light-mode .about-section__frame::after {
+    border-color: var(--brand-primary-dark);
+    box-shadow: 5px 5px 0 -3px rgba(0, 79, 210, 0.35);
+}
+
+body.light-mode .about-section__content::before {
+    background: linear-gradient(180deg, transparent, var(--brand-primary-dark) 30%, var(--brand-primary) 70%, transparent);
+    box-shadow: 0 0 10px rgba(0, 79, 210, 0.3);
+}
+
+body.light-mode .about-section__image {
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
+}
+
+body.light-mode .about-section__image-container:hover .about-section__image {
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+}
+
+/* ═══ Reduced motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+    .about-section__frame::before,
+    .about-section__frame::after,
+    .about-section__image,
+    .about-section__link,
+    .about-section__link::after {
+        transition: none;
     }
 }

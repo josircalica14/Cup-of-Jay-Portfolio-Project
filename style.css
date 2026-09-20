@@ -22,6 +22,13 @@ html {
     src: url('./assets/fonts/OrchisPrima-Regular.otf');
 }
 
+@font-face {
+    font-family: 'Chivo Mono Semi Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Chivo Mono Semi Bold'), url('./assets/fonts/ChivoMono[wght].woff') format('woff');
+    }
+
 /* ===== CORE CSS VARIABLES - SINGLE SOURCE OF TRUTH, EASY TO UPDATE ===== */
 :root {
     /* Navbar variables - separated for independent customization */
@@ -576,7 +583,7 @@ body.dark-mode h1 {
 }
 
 h1 {
-    font-family: 'Khula', sans-serif;
+    font-family: 'Chivo Mono Semi Bold', sans-serif;
     color: #e8e8e8;
     font-size: 4rem;
     letter-spacing: 1.5px;
@@ -1548,142 +1555,349 @@ body.light-mode .features-projects__title {
     color: var(--light-text-primary);
 }
 
-.carousel {
-    position: relative;
-    overflow: visible;
-    border-radius: 16px;
-    padding: 2rem 0;
+/* ── HERO SPOTLIGHT: one project on stage, the rest queued as thumbnails ── */
+.spotlight {
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-/* Fade out left and right edges */
-.carousel::before,
-.carousel::after {
-    content: "";
+.spotlight__stage {
+    position: relative;
+    aspect-ratio: 21 / 9;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #101216;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+        0 12px 40px rgba(0, 0, 0, 0.45),
+        0 32px 90px rgba(0, 0, 0, 0.35);
+    transition: box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+}
+
+/* Hover: glow ignites. The 3D tilt itself is driven by JS (main.js)
+   so rotateX/rotateY can track the cursor; a CSS translateY lift would
+   fight the inline transform, so the card "rises" via the tilt instead. */
+.spotlight__stage:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(34, 205, 218, 0.35),
+        0 18px 52px rgba(0, 0, 0, 0.5),
+        0 44px 110px rgba(0, 0, 0, 0.4),
+        0 0 48px rgba(34, 205, 218, 0.16);
+}
+
+/* Card 4 — cinematic zoom + darken on the active image */
+.spotlight__stage:hover img.is-on {
+    transform: scale(1.08);
+    filter: brightness(0.75) saturate(1.15);
+    transition: transform 1.4s cubic-bezier(0.23, 1, 0.32, 1), filter 1.4s ease;
+}
+
+.spotlight__stage img {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 12%;
-    z-index: 3;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 0.9s ease, transform 7s linear;
+}
+
+.spotlight__stage img.is-on {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.spotlight__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        linear-gradient(105deg, rgba(10, 11, 14, 0.55) 0%, transparent 45%),
+        linear-gradient(to top, rgba(10, 11, 14, 0.95) 0%, rgba(10, 11, 14, 0.55) 30%, transparent 62%);
+}
+
+.spotlight__meta {
+    position: absolute;
+    left: clamp(1.25rem, 4vw, 3rem);
+    right: clamp(1.25rem, 4vw, 3rem);
+    bottom: clamp(1.25rem, 3.5vw, 2.5rem);
+    z-index: 2;
+}
+
+/* Staggered entrance — retriggered by JS on every project switch */
+.spotlight__meta.swap .spotlight__eyebrow { animation: spotIn 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.spotlight__meta.swap .spotlight__title   { animation: spotIn 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both; }
+.spotlight__meta.swap .spotlight__caption { animation: spotIn 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.24s both; }
+.spotlight__meta.swap .spotlight__cta     { animation: spotIn 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.36s both; }
+
+@keyframes spotIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.spotlight__eyebrow {
+    display: inline-block;
+    font-family: 'NavBarFont', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #22cdda;
+    margin-bottom: 0.5rem;
+}
+
+.spotlight__title {
+    font-family: 'CardHeaderFont', sans-serif;
+    font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin: 0;
+    color: #f2f4f7;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+
+.spotlight__caption {
+    margin: 0.55rem 0 0;
+    max-width: 52ch;
+    font-family: 'NavBarFont', sans-serif;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    line-height: 1.5;
+    color: rgba(226, 232, 240, 0.78);
+}
+
+.spotlight__cta {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    margin-top: 1.1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #0c1b1e;
+    background: linear-gradient(90deg, #22cdda, #4da3ff);
+    padding: 0.6rem 1.4rem;
+    border-radius: 2rem;
+    box-shadow: 0 6px 24px rgba(34, 205, 218, 0.25);
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+}
+
+/* Sheen that sweeps across the pill on hover */
+.spotlight__cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
     pointer-events: none;
 }
 
-.carousel::before {
-    left: 0;
-    background: linear-gradient(to right, var(--carousel-fade, #242424) 0%, transparent 100%);
-    transition: background 0.3s ease;
-}
-
-.carousel::after {
-    right: 0;
-    background: linear-gradient(to left, var(--carousel-fade, #242424) 0%, transparent 100%);
-    transition: background 0.3s ease;
-}
-
-body.light-mode .carousel::before {
-    background: linear-gradient(to right, var(--carousel-fade, #ffffff) 0%, transparent 100%);
-}
-
-body.light-mode .carousel::after {
-    background: linear-gradient(to left, var(--carousel-fade, #ffffff) 0%, transparent 100%);
-}
-
-.carousel__track {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    overflow: visible;
-}
-
-.carousel {
-    overflow-x: clip;
-    overflow-y: visible;
-    padding: 2rem 3rem 3rem;
-    margin: 0 -3rem;
-}
-
-.carousel__slide {
-    min-width: 100%;
-    padding: 0 var(--spacing-sm);
-    box-sizing: border-box;
-    position: relative;
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Unfocused cards — scaled down, blurred, dimmed */
-.carousel__slide .card {
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
-                filter 0.5s cubic-bezier(0.23, 1, 0.32, 1),
-                opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1),
-                box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    filter: blur(1.5px) brightness(0.55);
-    transform: scale(0.9) translateY(1.5rem);
-    opacity: 0.75;
-}
-
-/* Focused card — sharp, lifted */
-.carousel__slide.is-active .card {
-    filter: none;
-    transform: scale(1) translateY(-1rem);
-    opacity: 1;
-}
-
-.carousel__slide.is-active .card:hover {
-    transform: translateY(-2rem) scale(1.02);
+.spotlight__cta:hover {
+    transform: translateY(-3px) scale(1.04);
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 8px 24px rgba(0,0,0,0.5),
-        0 20px 60px rgba(0,0,0,0.4),
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 0 30px rgba(255,255,255,0.07),
-        0 0 60px rgba(34,205,218,0.06);
+        0 10px 32px rgba(34, 205, 218, 0.4),
+        0 0 24px rgba(34, 205, 218, 0.3);
 }
 
-/* Static view (all cards visible) — disable bokeh effect */
-.carousel__track--static .carousel__slide .card {
-    filter: none;
-    transform: none;
+.spotlight__cta:hover::before {
+    transform: translateX(120%);
+}
+
+.spotlight__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.4rem;
+}
+
+/* Progress pills — the fill animates over one auto-advance interval */
+.spotlight__dots {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.spotlight__dot {
+    width: 2.8rem;
+    height: 0.28rem;
+    padding: 0;
+    border: 0;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.spotlight__dot:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.spotlight__dot .fill {
+    position: absolute;
+    inset: 0;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #004fd2, #22cdda);
+}
+
+.spotlight__dot.on .fill {
+    animation: dotFill var(--spotlight-interval, 6s) linear forwards;
+}
+
+/* Pause the fill along with autoplay when the card is hovered */
+.spotlight__dot.on:hover .fill,
+.spotlight--paused .spotlight__dot.on .fill {
+    animation-play-state: paused;
+}
+
+@keyframes dotFill {
+    to { width: 100%; }
+}
+
+.spotlight__thumbs {
+    display: flex;
+    gap: 0.9rem;
+}
+
+.spotlight__thumb {
+    width: clamp(5.5rem, 10vw, 8rem);
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0.45;
+    filter: saturate(0.7);
+    cursor: pointer;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+                filter 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.spotlight__thumb:hover {
+    opacity: 0.8;
+    transform: translateY(-3px);
+}
+
+.spotlight__thumb.on {
     opacity: 1;
+    filter: none;
+    transform: translateY(-4px);
+    border-color: rgba(34, 205, 218, 0.7);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 18px rgba(34, 205, 218, 0.2);
 }
 
-/* Static layout — center cards naturally */
-.carousel__track--static {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6rem;
+/* Light mode */
+body.light-mode .spotlight__stage {
+    background: #ece7dc;
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 12px 40px rgba(0, 0, 0, 0.12),
+        0 32px 90px rgba(0, 0, 0, 0.1);
 }
 
-.carousel__track--static .carousel__slide {
-    min-width: 0;
-    width: 45%;
-    flex-shrink: 0;
+body.light-mode .spotlight__scrim {
+    background:
+        linear-gradient(105deg, rgba(249, 246, 238, 0.22) 0%, transparent 40%),
+        linear-gradient(to top, rgba(249, 246, 238, 0.92) 0%, rgba(249, 246, 238, 0.4) 28%, transparent 52%);
 }
 
-@media (max-width: 1023px) {
-    .carousel__track--static .carousel__slide {
-        width: 50%;
+body.light-mode .spotlight__title {
+    color: #191c20;
+    text-shadow: none;
+}
+
+body.light-mode .spotlight__caption {
+    color: rgba(28, 32, 38, 0.72);
+}
+
+body.light-mode .spotlight__eyebrow {
+    color: #0087a8;
+}
+
+body.light-mode .spotlight__cta {
+    color: #ffffff;
+    background: linear-gradient(90deg, #004fd2, #0aa0b8);
+    box-shadow: 0 6px 24px rgba(0, 79, 210, 0.25);
+}
+
+body.light-mode .spotlight__dot {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .spotlight__dot:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .spotlight__thumb {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .spotlight__thumb.on {
+    border-color: rgba(0, 79, 210, 0.7);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 18px rgba(0, 79, 210, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .spotlight__stage {
+        aspect-ratio: 16 / 10;
     }
 }
 
-@media (max-width: 1450px) and (min-width: 768px) {
-    .carousel__track--static .carousel__slide {
-        width: 70%;
+@media (max-width: 600px) {
+    .spotlight__stage {
+        aspect-ratio: 4 / 5;
+    }
+
+    .spotlight__controls {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .spotlight__thumbs {
+        max-width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.3rem;
+    }
+
+    .spotlight__caption {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 }
 
-@media (max-width: 767px) {
-    .carousel__track--static .carousel__slide {
-        width: 90%;
+@media (prefers-reduced-motion: reduce) {
+    .spotlight__stage img {
+        transition: opacity 0.3s ease;
+        transform: none;
     }
-}
 
-@media (min-width: 768px) {
-    .carousel__slide {
-        min-width: 50%;
+    .spotlight__meta.swap .spotlight__eyebrow,
+    .spotlight__meta.swap .spotlight__title,
+    .spotlight__meta.swap .spotlight__caption,
+    .spotlight__meta.swap .spotlight__cta {
+        animation: none;
     }
-}
 
-@media (min-width: 1024px) {
-    .carousel__slide {
-        min-width: 33.333%;
+    .spotlight__dot.on .fill {
+        animation: none;
+        width: 100%;
+    }
+
+    .spotlight__stage,
+    .spotlight__stage:hover,
+    .spotlight__stage:hover img.is-on {
+        transform: none;
+        transition: none;
     }
 }
 
@@ -1905,21 +2119,6 @@ body.light-mode .card:hover {
     transform: translateY(-10px);
 }
 
-body.light-mode .carousel__slide.is-active .card:hover {
-    transform: translateY(-2rem) scale(1.02);
-}
-
-body:not(.light-mode) .carousel__slide.is-active .card:hover {
-    transform: translateY(-2rem) scale(1.02);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 8px 24px rgba(0,0,0,0.5),
-        0 20px 60px rgba(0,0,0,0.4),
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 0 30px rgba(255,255,255,0.07),
-        0 0 60px rgba(34,205,218,0.06);
-}
-
 body.light-mode .card__inner {
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
 }
@@ -1961,118 +2160,3 @@ body.light-mode .button:hover {
     box-shadow: 0 6px 24px rgba(0,79,210,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
-/* Remove slide overlay — not needed with original approach */
-.carousel__slide::after {
-    display: none;
-}
-
-.carousel__button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(30, 30, 38, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: rgba(255,255,255,0.85);
-    font-size: 1rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-}
-
-.carousel__button:hover {
-    background: rgba(0, 79, 210, 0.5);
-    border-color: rgba(34, 205, 218, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 79, 210, 0.4);
-    transform: translateY(-50%) scale(1.08);
-    color: #ffffff;
-}
-
-body.light-mode .carousel__button {
-    background: rgba(255, 255, 255, 0.75);
-    border-color: rgba(0, 0, 0, 0.08);
-    color: #1a2640;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-
-body.light-mode .carousel__button:hover {
-    background: rgba(0, 79, 210, 0.85);
-    border-color: transparent;
-    color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 79, 210, 0.3);
-}
-
-.carousel__button--prev {
-    left: var(--spacing-md);
-}
-
-.carousel__button--next {
-    right: var(--spacing-md);
-}
-
-.carousel__indicators {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: var(--spacing-md);
-}
-
-.carousel__indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 5rem;
-    background: rgba(255, 255, 255, 0.25);
-    border: none;
-    cursor: pointer;
-    transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1),
-                background 0.35s ease;
-}
-
-body.light-mode .carousel__indicator {
-    background: rgba(34, 34, 34, 0.2);
-}
-
-.carousel__indicator.active {
-    width: 24px;
-    background: linear-gradient(90deg, #004fd2, #22cdda);
-}
-
-body.light-mode .carousel__indicator.active {
-    background: linear-gradient(90deg, #004fd2, #22cdda);
-}
-
-/* Responsive adjustments for carousel */
-@media (max-width: 767px) {
-    .card__cover {
-        height: 450px;
-    }
-    
-    .carousel__button {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-    }
-    
-    .card__header {
-        font-size: 1.8rem;
-    }
-    
-    .card p {
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 500px) {
-    .card__cover {
-        height: 380px;
-    }
-}
