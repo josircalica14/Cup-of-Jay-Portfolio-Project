@@ -117,7 +117,7 @@
 }
 
 .about-section__text {
-    font-family: 'CardBodyFont', sans-serif;
+    font-family: 'NavBarFont', sans-serif;
     font-size: 1.02rem;
     line-height: 2;
     color: var(--text-color);
