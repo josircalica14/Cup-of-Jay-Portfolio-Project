@@ -1630,12 +1630,13 @@ body.light-mode .features-projects__title {
     will-change: transform;
 }
 
-/* Hover: glow ignites. The 3D tilt itself is driven by JS (main.js)
-   so rotateX/rotateY can track the cursor; a CSS translateY lift would
-   fight the inline transform, so the card "rises" via the tilt instead. */
+/* Hover: glow ignites — cyan edge shifts to mint, echoing the projects cards.
+   The 3D tilt itself is driven by JS (main.js) so rotateX/rotateY can track
+   the cursor; a CSS translateY lift would fight the inline transform, so the
+   card "rises" via the tilt instead. */
 .spotlight__stage:hover {
     box-shadow:
-        inset 0 0 0 1px rgba(34, 205, 218, 0.35),
+        inset 0 0 0 1px rgba(63, 240, 184, 0.4),
         0 18px 52px rgba(0, 0, 0, 0.5),
         0 44px 110px rgba(0, 0, 0, 0.4),
         0 0 48px rgba(34, 205, 218, 0.16);
@@ -1693,14 +1694,37 @@ body.light-mode .features-projects__title {
     to   { opacity: 1; transform: none; }
 }
 
+/* ── Spotlight accents — same palette as the projects-page cards:
+   cyan #22cdda base, mint #3ff0b8 hover, blue #004fd2 light mode ── */
+/* Eyebrow: live-dot chip — soft cyan capsule with a pulsing beacon */
 .spotlight__eyebrow {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: 'NavBarFont', sans-serif;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: #22cdda;
-    margin-bottom: 0.5rem;
+    text-shadow: 0 0 12px rgba(34, 205, 218, 0.5);
+    background: rgba(34, 205, 218, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.spotlight__eyebrow::before {
+    content: '';
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: #22cdda;
+    box-shadow: 0 0 10px rgba(34, 205, 218, 0.9);
+    animation: eyebrowPulse 2s ease-in-out infinite;
+}
+
+@keyframes eyebrowPulse {
+    50% { box-shadow: 0 0 18px rgba(34, 205, 218, 1); }
 }
 
 .spotlight__title {
@@ -1734,11 +1758,12 @@ body.light-mode .features-projects__title {
     text-transform: uppercase;
     text-decoration: none;
     color: #0c1b1e;
-    background: linear-gradient(90deg, #22cdda, #4da3ff);
+    background: linear-gradient(90deg, #22cdda, #3ff0b8);
+    border-left: 2px solid #22cdda;
     padding: 0.6rem 1.4rem;
     border-radius: 2rem;
     box-shadow: 0 6px 24px rgba(34, 205, 218, 0.25);
-    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 /* Sheen that sweeps across the pill on hover */
@@ -1754,6 +1779,7 @@ body.light-mode .features-projects__title {
 
 .spotlight__cta:hover {
     transform: translateY(-3px) scale(1.04);
+    border-left-color: #3ff0b8;
     box-shadow:
         0 10px 32px rgba(34, 205, 218, 0.4),
         0 0 24px rgba(34, 205, 218, 0.3);
@@ -1843,8 +1869,8 @@ body.light-mode .features-projects__title {
     opacity: 1;
     filter: none;
     transform: translateY(-4px);
-    border-color: rgba(34, 205, 218, 0.7);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 18px rgba(34, 205, 218, 0.2);
+    border-color: rgba(63, 240, 184, 0.75);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 18px rgba(63, 240, 184, 0.22);
 }
 
 /* Light mode */
@@ -1872,13 +1898,27 @@ body.light-mode .spotlight__caption {
 }
 
 body.light-mode .spotlight__eyebrow {
-    color: #0087a8;
+    color: #ffffff;
+    text-shadow: none;
+    font-weight: 700;
+    background: #004fd2;
+    box-shadow: 0 4px 16px rgba(0, 79, 210, 0.35);
+}
+
+body.light-mode .spotlight__eyebrow::before {
+    background: #7ee7f0;
+    box-shadow: 0 0 10px rgba(126, 231, 240, 0.9);
 }
 
 body.light-mode .spotlight__cta {
     color: #ffffff;
     background: linear-gradient(90deg, #004fd2, #0aa0b8);
+    border-left-color: #004fd2;
     box-shadow: 0 6px 24px rgba(0, 79, 210, 0.25);
+}
+
+body.light-mode .spotlight__cta:hover {
+    border-left-color: #0aa0b8;
 }
 
 body.light-mode .spotlight__dot {
@@ -1894,7 +1934,7 @@ body.light-mode .spotlight__thumb {
 }
 
 body.light-mode .spotlight__thumb.on {
-    border-color: rgba(0, 79, 210, 0.7);
+    border-color: rgba(10, 160, 184, 0.75);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 18px rgba(0, 79, 210, 0.15);
 }
 
@@ -1947,6 +1987,10 @@ body.light-mode .spotlight__thumb.on {
     .spotlight__dot.on .fill {
         animation: none;
         width: 100%;
+    }
+
+    .spotlight__eyebrow::before {
+        animation: none;
     }
 
     .spotlight__stage,
