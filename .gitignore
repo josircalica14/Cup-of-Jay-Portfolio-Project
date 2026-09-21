@@ -1,6 +1,18 @@
 # Stale agent worktrees — full project copies that must never be searched or committed
 .kilo/worktrees/
 
+# Tool & agent configs — not part of the site
+.agents/
+.kilo/
+.kiro/
+.trae/
+.freebuff/
+.vscode/
+skills-lock.json
+
+# Scratch / drafts
+sample code/
+
 # OS cruft
 Thumbs.db
 Desktop.ini
