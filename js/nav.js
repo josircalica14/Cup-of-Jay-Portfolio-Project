@@ -37,12 +37,13 @@ export function renderNavLinks() {
 export function setupNavScroll() {
   const nav = document.querySelector('.nav');
   const mobileBar = document.querySelector('.mobile-nav__bar');
-  if (!nav) return;
 
   const update = () => {
     const scrolled = window.scrollY > 10;
-    nav.classList.toggle('nav--scrolled', scrolled);
+    if (nav) nav.classList.toggle('nav--scrolled', scrolled);
     if (mobileBar) mobileBar.classList.toggle('mobile-nav__bar--scrolled', scrolled);
+    // Drives the full-width blur strip under the scrolled navbar
+    document.body.classList.toggle('nav-scrolled', scrolled);
   };
   window.addEventListener('scroll', update, { passive: true });
   update();

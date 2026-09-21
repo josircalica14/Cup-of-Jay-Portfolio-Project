@@ -7,7 +7,7 @@
     <title>Projects | Cup of Jay</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="about.css">
-    <link rel="stylesheet" href="projects.css">
+    <link rel="stylesheet" href="projects.css?v=21">
     <link rel="stylesheet" href="theme-toggle.css">
     <script>
         (function() {
@@ -38,6 +38,9 @@
 
     <!-- Mobile Nav Backdrop -->
     <label for="mobile-nav-toggle" class="mobile-nav__backdrop"></label>
+
+    <!-- Full-width blur strip under the scrolled navbar -->
+    <div class="nav-blur-strip" aria-hidden="true"></div>
 
     <!-- Mobile Nav Drawer -->
     <nav class="mobile-nav__drawer" aria-label="Mobile navigation">
@@ -105,43 +108,46 @@
         <p class="projects-header__subtitle">A selection of projects that I'm proud of.</p>
     </header>
 
-    <main class="project-grid">
-        <div class="project-item">
-            <div class="project-item__image-wrapper">
-                <a href="#"><img src="https://picsum.photos/800/600?random=1" alt="Project 1" class="project-item__image"></a>
+    <main class="project-bands">
+        <!-- Overlap Card Band: full-bleed image + frosted glass card. One band = one project. -->
+        <article class="project-band">
+            <div class="project-band__image">
+                <a href="#"><img src="https://picsum.photos/800/600?random=1" alt="ScanPasada" class="project-band__img"></a>
             </div>
-            <div class="project-item__content">
-                <h2 class="project-item__title">ScanPasada</h2>
-                <div class="project-item__description">
-                    <p>A queueing system for a local jeepney terminal, designed to streamline passenger flow.</p>
+            <div class="project-band__card">
+                <div class="project-band__tags">
+                    <span class="project-band__tag">Vue.js</span>
+                    <span class="project-band__tag">Firebase</span>
+                    <span class="project-band__tag">Figma</span>
+                    <span class="project-band__tag">Tailwind CSS</span>
+                    <span class="project-band__tag">Node.js</span>
                 </div>
-                <div class="project-item__tags">
-                    <span class="chip">Vue.js</span>
-                    <span class="chip">Firebase</span>
-                    <span class="chip">Figma</span>
-                </div>
+                <h2 class="project-band__title">ScanPasada</h2>
+                <p class="project-band__description">A queueing system for a local jeepney terminal, designed to streamline passenger flow.</p>
+                <a href="#" class="project-band__link">View Project <span class="project-band__arrow">→</span></a>
             </div>
-        </div>
-        <div class="project-item">
-            <div class="project-item__image-wrapper">
-                <a href="#"><img src="https://picsum.photos/800/600?random=2" alt="Project 2" class="project-item__image"></a>
+        </article>
+        <article class="project-band project-band--alt">
+            <div class="project-band__image">
+                <a href="#"><img src="https://picsum.photos/800/600?random=2" alt="RetroWalk" class="project-band__img"></a>
             </div>
-            <div class="project-item__content">
-                <h2 class="project-item__title">RetroWalk</h2>
-                <div class="project-item__description">
-                    <p>An interactive virtual museum inspired by the movie Inside Out, built with Three.js.</p>
+            <div class="project-band__card">
+                <div class="project-band__tags">
+                    <span class="project-band__tag">Three.js</span>
+                    <span class="project-band__tag">Blender</span>
+                    <span class="project-band__tag">JavaScript</span>
+                    <span class="project-band__tag">WebGL</span>
+                    <span class="project-band__tag">GLSL</span>
                 </div>
-                <div class="project-item__tags">
-                    <span class="chip">Three.js</span>
-                    <span class="chip">Blender</span>
-                    <span class="chip">JavaScript</span>
-                </div>
+                <h2 class="project-band__title">RetroWalk</h2>
+                <p class="project-band__description">An interactive virtual museum inspired by the movie Inside Out, built with Three.js.</p>
+                <a href="#" class="project-band__link">View Project <span class="project-band__arrow">→</span></a>
             </div>
-        </div>
-        <!-- Add more project items here -->
+        </article>
+        <!-- Add more project bands here: alternate project-band--alt for side rhythm -->
     </main>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js?v=7"></script>
     <script src="lib/libgif.js"></script>
     <script src="lib/web-pet-engine.js"></script>
 </body>

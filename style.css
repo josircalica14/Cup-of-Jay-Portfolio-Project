@@ -19,7 +19,27 @@ html {
 
 @font-face {
     font-family: 'CardBodyFont';
-    src: url('./assets/fonts/OrchisPrima-Regular.otf');
+    src: url('./assets/fonts/OrchisPrima-Bold.otf');
+}
+
+@font-face {
+    font-family: 'ProjectCardTitleFont';
+    src: url('./assets/fonts/OrchisPrima-Demi.otf');
+}
+
+@font-face {
+    font-family: 'ProjectCardDescriptionFont';
+    src: url('./assets/fonts/OrchisPrima-Demi.otf');
+}
+
+@font-face {
+    font-family: 'ProjectCardEyeBrowFont';
+    src: url('./assets/fonts/OrchisPrima-Demi.otf');
+}
+
+@font-face {
+    font-family: 'ProjectCardTagsFont';
+    src: url('./assets/fonts/OrchisPrima-Demi.otf');
 }
 
 @font-face {
@@ -213,6 +233,40 @@ body.light-mode .mobile-burger span {
     
     .theme-toggle {
         transform: scale(0.85); /* Scale down theme toggle to match */
+    }
+}
+
+/* ── Scroll blur strip: blurs EVERYTHING passing under the scrolled navbar ──
+   Sits between page content (pets 5000, sections) and the nav chrome
+   (nav 6000 / mobile bar 9980), so the whole top zone frosts over when
+   scrolled — including the gaps around the navbar's rounded pill. */
+.nav-blur-strip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* Matches the desktop nav's scrolled height by default */
+    height: calc(var(--nav-top-spacing) + 7rem);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: transparent;
+    pointer-events: none;
+    z-index: 5500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), visibility 0.7s;
+}
+
+body.nav-scrolled .nav-blur-strip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile: match the mobile bar's height and slot below it (9980) */
+@media (max-width: 1049px) {
+    .nav-blur-strip {
+        height: calc(var(--mobile-logo-top-spacing) + 3.5rem + 1rem);
+        z-index: 9700;
     }
 }
 
@@ -1564,7 +1618,7 @@ body.light-mode .features-projects__title {
 
 .spotlight__stage {
     position: relative;
-    aspect-ratio: 21 / 9;
+    aspect-ratio: 2 / 1;
     border-radius: 1.5rem;
     overflow: hidden;
     background: #101216;
@@ -1853,7 +1907,8 @@ body.light-mode .spotlight__thumb.on {
 
 @media (max-width: 600px) {
     .spotlight__stage {
-        aspect-ratio: 4 / 5;
+        /* Shorter than the old 4/5 portrait so the card doesn't eat the screen */
+        aspect-ratio: 1 / 1;
     }
 
     .spotlight__controls {
