@@ -551,7 +551,8 @@ body.light-mode .hero-image {
 
 /* Reset tilt smoothly when mouse leaves */
 .hero-image.tilt-reset {
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+    /* JS (rAF easing in js/tilt.js) owns the transform; this only fades the glow */
+    transition: filter 0.4s ease;
 }
 
 .hero-text-container {

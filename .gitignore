@@ -1,0 +1,6 @@
+# Stale agent worktrees — full project copies that must never be searched or committed
+.kilo/worktrees/
+
+# OS cruft
+Thumbs.db
+Desktop.ini
